@@ -1,0 +1,28 @@
+{
+  "name": "level-crash",
+  "version": "0.0.0",
+  "description": "level-crash ===========",
+  "main": "index.js",
+  "dependencies": {
+    "restify": "^2.6.1",
+    "node-redis": "^0.1.7",
+    "express": "^3.4.8",
+    "js-yaml": "^3.0.1"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.2"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eiriksm/level-crash"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eiriksm/level-crash/issues"
+  },
+  "homepage": "https://github.com/eiriksm/level-crash"
+}
