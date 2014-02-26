@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var yaml = require('js-yaml');
 var fs = require('fs');
+var util = require('util');
 // Wooo. Colors.
 var colors = require('colors');
 
@@ -15,17 +16,13 @@ app.use(app.router);
 //   - i, w, e
 app.log = function(str, severity) {
   var severityToColor = function(s, str) {
-    switch(s) {
-      case 'w':
-        return str.yellow;
-
-      case 'e':
-        return str.red;
-
-      case 'i':
-      default:
-        return str.green;
+    if (s === 'w') {
+      return str.yellow;
     }
+    if (s === 'e') {
+      return str.red;
+    }
+    return str.green;
   };
   if (!severity) {
     severity = 'info';
@@ -49,4 +46,9 @@ app.get('/', function(req, res){
     res.send(text);
   });
 });
+app.start = function() {
+  // Listen on selected port
+  app.listen(app.config.port);
+  app.log(util.format('Listening on port %d', app.config.port));
+};
 module.exports = app;
