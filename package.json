@@ -7,7 +7,8 @@
     "restify": "^2.6.1",
     "node-redis": "^0.1.7",
     "express": "^3.4.8",
-    "js-yaml": "^3.0.1"
+    "js-yaml": "^3.0.1",
+    "colors": "^0.6.2"
   },
   "devDependencies": {
     "grunt": "^0.4.2",
