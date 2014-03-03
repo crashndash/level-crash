@@ -1,8 +1,15 @@
+@import 'lib/jui';
+@import 'sprite';
+
 .dashboard {
   position: fixed;
 }
 .powerup {
   z-index: 99;
+  position: relative;
+  .bomb {
+    @include sprite('bomb');
+  }
 }
 
 .road-wrapper {

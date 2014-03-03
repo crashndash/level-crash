@@ -3,12 +3,12 @@ var gutil = require('gulp-util');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var jshint = require('gulp-jshint');
-var gulpsass = require('gulp-sass');
+var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
+var spritesmith = require('gulp.spritesmith');
 
 var paths = {
-  libs: ['src/public/js/lib/vendor/*.js', 'src/public/js/lib/*.js'],
-
+  libs: ['static/js/lib/vendor/*.js', 'static/js/lib/*.js']
 };
 
 // Do things with stylesheets.
@@ -19,6 +19,26 @@ gulp.task('scripts', function() {
   return gulp.src(paths.libs)
     .pipe(uglify())
     .pipe(concat('lib.min.js'))
-    .pipe(gulp.dest('src/public/js/build/lib'));
+    .pipe(gulp.dest('static/js/build/lib'));
 });
 
+gulp.task('sprite', function () {
+  var spriteData = gulp.src('src/img/*.png').pipe(spritesmith({
+    imgName: 'sprite.png',
+    cssName: 'sprite.scss'
+  }));
+  spriteData.img.pipe(gulp.dest('static/images/'));
+  spriteData.css.pipe(gulp.dest('static/css/scss'));
+});
+
+gulp.task('scss', function() {
+  gulp.src('static/css/scss/*.scss')
+    .pipe(sass({
+      errLogToConsole: true,
+      error: function(err) {
+        console.log(err);
+        console.log('satan');
+      }
+    }))
+    .pipe(gulp.dest('static/css'));
+});

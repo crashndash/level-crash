@@ -39,10 +39,11 @@ catch(err) {
   app.config = yaml.safeLoad(fs.readFileSync('./default.config.yml', 'utf8'));
 }
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/../static'));
 
 app.get('/', function(req, res){
-  fs.readFile(__dirname + '/public/index.html', 'utf8', function(err, text){
+  fs.readFile(__dirname + '/../static/index.html', 'utf8', function(err, text){
+    console.log(err);
     res.send(text);
   });
 });
