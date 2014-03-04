@@ -43,7 +43,6 @@ app.use(express.static(__dirname + '/../static'));
 
 app.get('/', function(req, res){
   fs.readFile(__dirname + '/../static/index.html', 'utf8', function(err, text){
-    console.log(err);
     res.send(text);
   });
 });
