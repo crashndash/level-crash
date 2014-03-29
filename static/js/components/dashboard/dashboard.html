@@ -1,0 +1,8 @@
+<div class="dashboard">
+  <input data-ng-model="level.length" type="text" />
+</div>
+<div class="pu-wrapper">
+  <div ng-repeat="(p, v) in possiblePowerUps">
+    <div class="powerup no-margin sprite-{{p}}" jui:draggable data-powerup="{{p}}"></div>
+  </div>
+</div>

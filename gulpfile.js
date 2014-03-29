@@ -25,14 +25,23 @@ gulp.task('scripts', function() {
 gulp.task('sprite', function () {
   var spriteData = gulp.src('src/img/*.png').pipe(spritesmith({
     imgName: 'sprite.png',
-    cssName: 'sprite.scss'
+    cssName: 'sprite.scss',
+    cssFormat: 'css',
+    imgPath: '../images/sprite.png',
+    cssOpts: {
+      cssClass: function (item) {
+        // `item` has `x`, `y`, `width`, `height`, `name`, `image`, and more
+        // It is suggested to `console.log` output
+        return '.sprite-' + item.name;
+      }
+    }
   }));
   spriteData.img.pipe(gulp.dest('static/images/'));
   spriteData.css.pipe(gulp.dest('static/css/scss'));
 });
 
 gulp.task('scss', function() {
-  gulp.src('static/css/scss/*.scss')
+  gulp.src('static/css/scss/style.scss')
     .pipe(sass({
       errLogToConsole: true,
       error: function(err) {
@@ -41,4 +50,12 @@ gulp.task('scss', function() {
       }
     }))
     .pipe(gulp.dest('static/css'));
+});
+
+// Watch
+gulp.task('watch', function() {
+
+  // Watch .scss files
+  gulp.watch('static/css/scss/**/*.scss', ['scss']);
+
 });
