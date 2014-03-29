@@ -3,6 +3,7 @@
   angular.module('levelCrash', [
     'ngRoute',
     'levelCrash.controllers',
+    'levelCrash.directives',
     'jui'
   ])
 
@@ -15,4 +16,5 @@
   });
 
   angular.module('levelCrash.controllers', [], function(){});
+  angular.module('levelCrash.directives', [], function(){});
 })(angular);
