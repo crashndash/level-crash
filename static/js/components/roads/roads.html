@@ -1,14 +1,6 @@
 <div class="segment" data-ng-repeat="road in makeRoads() track by $index">
   <div class="segment-resizer" style="height: {{getHeight($index)}}px" jui:resizable event:resize="roadResized" opt:maxWidth="150" opt:minHeight="30" opt:maxHeight="120" opt:minWidth="150"></div>
-  <div class="side left-side" style="
-    -webkit-transform: skew({{getSkew(0, $index)}});
-    -moz-transform: skew({{getSkew(0, $index)}});
-    -o-transform: skew({{getSkew(0, $index)}});
-    -ms-transform: skew({{getSkew(0, $index)}});
-    z-index:2;
-    height: {{getHeight(0, $index)}}px;
-    width: {{getWidth(0, $index)}}px;"
-      jui:resizable
+  <div class="side-resizer" jui:resizable
       event:resize="sideResized"
       opt:maxWidth="60"
       opt:minHeight="getHeight(road)"
@@ -17,7 +9,24 @@
       data-index="{{$index}}"
       data-side="0">
   </div>
-  <div class="side right-side" style="width: {{getWidth(1, $index)}}px;"></div>
+  <div class="side-resizer right" jui:resizable
+      event:resize="sideResized"
+      opt:maxWidth="60"
+      opt:minHeight="getHeight(road)"
+      opt:maxHeight="getHeight(road)"
+      opt:minWidth="0"
+      opt:handles="'w'"
+      data-index="{{$index}}"
+      data-side="1">
+  </div>
+  <svg class="svg-side left" height="{{getHeight($index)}}" width="80">
+    <polygon points="0,0 {{getWidth(0, $index - 1)}},0 {{getWidth(0, $index)}},100 0,100" style="fill:green"></polygon>
+  </svg>
+  <svg class="svg-side right" height="{{getHeight($index)}}" width="80">
+    <polygon points="{{getSvgPoints(1, $index)}}" style="fill:green"></polygon>
+  </svg>
+
+  </svg>
   <div ng-if="hasPowerup($index)" class="road-powerup">
     <div class="powerup sprite-{{ powerUp($index) }}"></div>
   </div>

@@ -2,6 +2,7 @@ test:
 	@NODE_ENV=test ./node_modules/mocha/bin/_mocha --reporter spec
 
 test-front:
+		./node_modules/gulp/bin/gulp.js scripts
 	@NODE_ENV=test ./node_modules/karma/bin/karma start karma.conf.js
 
 test-cov:

@@ -1,20 +1,4 @@
-<div class="dashboard">
-  <input data-ng-model="level.length" type="text" />
-</div>
-<div class="bomb powerup" jui:draggable>BOMB</div>
-<div class="road-wrapper">
-  <div class="segment" data-ng-repeat="road in makeRoads() track by $index" jui:resizable event:resize="roadResized" opt:maxWidth="300" opt:minHeight="50" opt:maxHeight="300" opt:minWidth="300">
-    <div class="side left-side" style="width: {{getWidth(0, $index)}}px;"></div>
-    <div ng-if="hasPowerup($index)">
-      <div class="powerup {{ powerUp($index) }}">{{ powerUp($index) }}</div>
-    </div>
-    <div ng-if="hasBlock($index)">
-      <div class="block($index)"></div>
-    </div>
-    <div ng-if="hasSwarm($index)">
-      <div class="swarm($index)"></div>
-    </div>
-    <div class="side right-side" style="width: {{getWidth(0, $index)}}px;"></div>
-    <div data-index="{{$index}}" class="inner-drop" jui:droppable event:drop="dropped" opt:tolerance="pointer"></div>
-  </div>
+<div ng-show="true || step == 2" data-dashboard></div>
+<div ng-show="true || step == 3" class="road-wrapper">
+  <div data-roads></div>
 </div>
