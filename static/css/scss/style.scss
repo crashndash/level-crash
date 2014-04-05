@@ -18,6 +18,8 @@
   height: 100%;
   padding: 10px;
   position: absolute;
+  top: 0;
+  width: 100%;
 }
 
 .road-wrapper {
@@ -35,17 +37,26 @@
   width: 100%;
   height: 100%;
   background: url(../images/level_themes/grass/road.png);
+  z-index: 1;
 }
 .segment {
   box-shadow: 1px 0px 2px #eee;
   background-size: 40px 40px;
   //overflow-x: hidden;
   position: relative;
+  height: 100px;
+}
+.svg-side {
+  position: relative;
+  z-index: 2;
+  &.right {
+    position: absolute;
+    right: 0;
+  }
 }
 .side {
   height: 100%;
   position: relative;
-  background-size: 100% 100%;
 }
 .side-resizer {
   height: 100%;

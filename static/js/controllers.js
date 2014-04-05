@@ -32,6 +32,7 @@
       "swarms": [],
       "enemyVariations": ["police"]
     };
+    level.powerups = {};
     // Make the level as long as the length says.
     var possiblePowerUps = {
       nitro: true,
@@ -80,6 +81,34 @@
         return level.offsets[d][side] / 2;
       }
       return level.minOffset;
+    };
+    $scope.getSvgPoints = function(side, index) {
+      var getRightPoints = function(index) {
+        // Calculate how previous point is placed compared to 80 width.
+        var w = $scope.getWidth(1, index);
+        var pw = $scope.getWidth(1, index - 1);
+        var points = [];
+        points.push((80 - pw) + ',0');
+        points.push('80,0');
+        points.push('80,' + $scope.getHeight(index));
+        points.push((80 - w) + ',' + $scope.getHeight(index));
+        return points.join(' ');
+      };
+      if (side === 1) {
+        return getRightPoints(index);
+      }
+      return getLeftPoints(index);
+    };
+    $scope.getBackgroundImage = function(side, index) {
+      var w = $scope.getWidth(side, index);
+      var pw = $scope.getWidth(side, index - 1);
+      if (w === pw) {
+        return 'green-3.png';
+      }
+      if (w > pw) {
+        return 'green-1.png';
+      }
+      return 'green-2.png';
     };
     $scope.getHeight = function(index) {
       var d = level.length - index;
