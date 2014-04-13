@@ -1,5 +1,6 @@
 test:
 	@NODE_ENV=test ./node_modules/mocha/bin/_mocha --reporter spec
+	./node_modules/.bin/jshint src/ static/js/*.js static/js/components/ lib/ routes/
 
 test-front:
 		./node_modules/gulp/bin/gulp.js scripts
