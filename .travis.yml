@@ -6,4 +6,3 @@ node_js:
 script:
   - make test
   - make test-front
-  - ./node_modules/jshint/bin/jshint src
