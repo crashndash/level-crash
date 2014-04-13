@@ -17,8 +17,9 @@ module.exports = function(config) {
     files: [
       {pattern: 'node_modules/chai/chai.js', include: true},
       'static/js/build/**/*.js',
-      'static/js/*.js',
+      'static/js/app.js',
       'static/js/components/**/*.js',
+      'static/js/controllers.js',
       'test/karma/*.js'
     ],
 
