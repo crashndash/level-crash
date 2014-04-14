@@ -1,10 +1,18 @@
 var express = require('express');
 var app = express();
+app.namespace = 'levelcrasher';
+module.exports = app;
 var yaml = require('js-yaml');
 var fs = require('fs');
 var util = require('util');
 // Wooo. Colors.
-var colors = require('colors');
+require('colors');
+
+// Redis db.
+var db = require('../lib/db');
+
+// Some routes.
+var routes = require('../routes');
 
 app.use(express.json());
 app.use(express.urlencoded());
@@ -46,9 +54,14 @@ app.get('/', function(req, res){
     res.send(text);
   });
 });
+app.get('/api/level', routes.listLevels);
+app.get('/api/level/:name', routes.getLevel);
+app.post('/api/level', routes.saveLevel);
 app.start = function() {
+  // Boot up redis db client.
+  db.init(app.config.redis);
+
   // Listen on selected port
   app.listen(app.config.port);
   app.log(util.format('Listening on port %d', app.config.port));
 };
-module.exports = app;
