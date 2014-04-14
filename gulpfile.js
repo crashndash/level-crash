@@ -1,10 +1,8 @@
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var jshint = require('gulp-jshint');
 var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
+var prefix = require('gulp-autoprefixer');
 var spritesmith = require('gulp.spritesmith');
 
 var paths = {
@@ -49,6 +47,7 @@ gulp.task('scss', function() {
         console.log('satan');
       }
     }))
+    .pipe(prefix("last 1 version", "> 1%", "ie 8", "ie 7"))
     .pipe(gulp.dest('static/css'));
 });
 
