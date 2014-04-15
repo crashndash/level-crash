@@ -1,36 +1,34 @@
 ;(function(angular) {
-  angular.module('levelCrash.controllers', [])
-  .controller('mainCtrl', function ($scope, $timeout) {
+  angular.module('levelCrash.controllers')
+  .controller('mainCtrl', function ($scope, $timeout, $http) {
     var roads = [];
     var lastlevelLength;
+    var activeElement;
     var level = {
-      "obstacles": {},
-      "jumpDuration": 1.5,
-      "powerFreq": 0,
-      "obstacleFreq": 0,
+      //"obstacles": {},
+      //"jumpDuration": 1.5,
+      //"powerFreq": 0,
+      //"obstacleFreq": 0,
       "jumpCount": 11,
       "minOffset": 30,
       "maxOffset": 30,
-      //"powerups": {
-      //  40: 'bomb'
-      //},
-      "speedFactor": 1,
-      "tagline": "The police are after you!",
-      "availableObstacles": ["wheel"],
-      "carWeight": 10,
+      "powerups": {},
+      //"speedFactor": 1,
+      //"availableObstacles": ["wheel"],
+      //"carWeight": 10,
       "blocks": {},
-      "spawnFrequency": 100,
+      //"spawnFrequency": 100,
       "offsets": {},
-      "enemyLimit": 5,
-      "impulsefactor": 80,
+      //"enemyLimit": 5,
+      //"impulsefactor": 80,
       "theme": "grass",
-      "availablePowerUps": ["bomb"],
-      "length": 10,
+      //"availablePowerUps": ["bomb"],
+      "length": 50,
       "roadAlters": {},
-      "predefObstacles": {},
-      "jumpHeight": 2,
+      //"predefObstacles": {},
+      //"jumpHeight": 2,
       "swarms": [],
-      "enemyVariations": ["police"]
+      //"enemyVariations": ["police"]
     };
     level.powerups = {};
     // Make the level as long as the length says.
@@ -38,6 +36,12 @@
       nitro: true,
       bomb: true,
       jumps_pu: true
+    };
+    $scope.possibleBlocks = {
+      bricks: true,
+      water: true,
+      grass: true,
+      fire: true
     };
     $scope.possiblePowerUps = possiblePowerUps;
     $scope.level = level;
@@ -51,10 +55,6 @@
       }
       lastlevelLength = parseInt($scope.level.length, 10);
       return roads;
-    };
-    $scope.roadResized = function(e, val) {
-      // Save for later. First find delta.
-      console.log(e, val);
     };
     $scope.hasPowerup = function(index) {
       var level = $scope.level;
@@ -71,6 +71,21 @@
       var pu = level.powerups[d];
       if (possiblePowerUps[pu]) {
         return pu;
+      }
+      return false;
+    };
+    $scope.hasBlock = function(index) {
+      var l = $scope.level;
+      if (l.blocks && l.blocks[l.length - index]) {
+        return true;
+      }
+      return false;
+    };
+    $scope.block = function(index) {
+      var l = $scope.level;
+      var b = l.blocks[l.length - index];
+      if ($scope.possibleBlocks[b]) {
+        return b;
       }
       return false;
     };
@@ -174,19 +189,81 @@
       level.offsets[d][side] = (val.size.width * 2);
       $scope.$digest();
     };
-    $scope.dropped = function(e, val) {
-      // Find element that has been dropped something on.
-      var $el = $(e.target);
-      var $source = $(e.srcElement);
-      var index = $el.attr('data-index');
-      var powerup = $source.attr('data-powerup');
-      level.powerups[(level.length - parseInt(index, 10))] = powerup;
-      $scope.$digest();
-      // Reset src-element.
-      $(e.srcElement).css('top', '');
-      $(e.srcElement).css('left', '');
+    var saveData = function() {
+      // Empty names not allowed.
+      if (!$scope.name || $scope.name === '') {
+        return false;
+      }
+      return $http.post('/api/level', {
+        level: $scope.level,
+        name: $scope.name
+      });
     };
-    $scope.test = 'test2';
+    $scope.saveLevel = function() {
+      var s = saveData();
+      if (!s) {
+        alert('Something went wrong');
+        return;
+      }
+      s.success(function(data) {
+        console.log(data);
+      })
+      .error(function(e, c) {
+        console.log(e, c);
+        if (c === 400) {
+          // Name is taken.
+          alert(e);
+          return;
+        }
+        alert('We had some problems saving this.');
+      });
+    };
+    $scope.setElementActive = function(type, value) {
+      activeElement = {
+        type: type,
+        value: value
+      };
+    };
+    $scope.addElement = function(index) {
+      if (!activeElement || !activeElement.type || !activeElement.value) {
+        return;
+      }
+      // Use as toggle if there is something there already.
+      var delta = (level.length - parseInt(index, 10));
+      if ($scope.level.blocks[delta]) {
+        delete $scope.level.blocks[delta];
+        return;
+      }
+      if ($scope.level.powerups[delta]) {
+        delete $scope.level.powerups[delta];
+        return;
+      }
+      $scope.level[activeElement.type + 's'][delta] = activeElement.value;
+    };
+    $scope.isElementActive = function(type, value) {
+      return (activeElement && activeElement.type === type && activeElement.value === value);
+    };
+
     $scope.step = 1;
+    $scope.tryStepTwo = function() {
+      // Validate a couple of things.
+      if (!$scope.name || $scope.name.length === 0 || $scope.name.length > 15) {
+        return;
+      }
+      if (!$scope.level.author|| $scope.level.author.length === 0 || $scope.level.author.length > 15) {
+        return;
+      }
+      var s = saveData();
+      if (!s) {
+        alert('Something went wrong!');
+        return;
+      }
+      s.success(function() {
+        $scope.step = 2;
+      })
+      .error(function() {
+        alert('Something went wrong!');
+      });
+    };
   });
 })(angular);

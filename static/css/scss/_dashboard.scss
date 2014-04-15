@@ -1,0 +1,35 @@
+@import 'lib/grids';
+.block,
+.powerup {
+  margin: 0 auto;
+}
+@each $block in grass, water, bricks, fire {
+  .block-#{$block} {
+    background-image: url('img/#{$block}.png');
+    width: 30px;
+    height: 30px;
+  }
+}
+.block-grass {
+  background: green;
+}
+.block-fire {
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.adders {
+  .adder-wrapper {
+    @include zen-clear();
+  }
+  .adder-block {
+    float: left;
+    padding: 5px;
+    background: #eee;
+    margin: 2px;
+    opacity: .8;
+    &.active {
+      opacity: 1;
+      background: #ddd;
+    }
+  }
+}

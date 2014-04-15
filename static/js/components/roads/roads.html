@@ -1,4 +1,4 @@
-<div class="segment" data-ng-repeat="road in makeRoads() track by $index">
+<div class="segment" data-ng-cloak data-ng-repeat="road in makeRoads() track by $index">
   <div class="segment-resizer" style="height: {{getHeight($index)}}px" jui:resizable event:resize="roadResized" opt:maxWidth="150" opt:minHeight="30" opt:maxHeight="120" opt:minWidth="150"></div>
   <div class="side-resizer" jui:resizable
       event:resize="sideResized"
@@ -25,16 +25,14 @@
   <svg class="svg-side right" height="{{getHeight($index)}}" width="80">
     <polygon points="{{getSvgPoints(1, $index)}}" style="fill:green"></polygon>
   </svg>
-
-  </svg>
   <div ng-if="hasPowerup($index)" class="road-powerup">
     <div class="powerup sprite-{{ powerUp($index) }}"></div>
   </div>
-  <div ng-if="hasBlock($index)">
-    <div class="block($index)"></div>
+  <div class="road-block" ng-if="hasBlock($index)">
+    <div class="inside block-{{block($index)}}"  data-ng-click="addElement($index)"></div>
   </div>
   <div ng-if="hasSwarm($index)">
-    <div class="swarm($index)"></div>
+    <div class="swarm"></div>
   </div>
-  <div data-index="{{$index}}" class="inner-drop" jui:droppable event:drop="dropped" opt:tolerance="pointer"></div>
+  <div class="inner-drop" data-ng-click="addElement($index)"></div>
 </div>

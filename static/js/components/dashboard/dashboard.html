@@ -1,8 +1,19 @@
-<div class="dashboard">
-  <input data-ng-model="level.length" type="text" />
-</div>
-<div class="pu-wrapper">
-  <div ng-repeat="(p, v) in possiblePowerUps">
-    <div class="powerup no-margin sprite-{{p}}" jui:draggable data-powerup="{{p}}"></div>
+<div class="adders">
+  <div class="pu-wrapper adder-wrapper">
+    <div data-ng-repeat="(p, v) in possiblePowerUps">
+      <div class="adder-block" data-ng-class="{'active': isElementActive('powerup', p)}">
+        <div class="powerup no-margin sprite-{{p}}" data-ng-click="setElementActive('powerup', p)">
+        </div>
+      </div>
+    </div>
   </div>
+  <div class="block-wrapper adder-wrapper">
+    <div data-ng-repeat="(b, v) in possibleBlocks">
+      <div class="adder-block" data-ng-class="{'active': isElementActive('block', b)}">
+        <div class="block no-margin block-{{b}}" data-ng-click="setElementActive('block', b)"></div>
+      </div>
+    </div>
+  </div>
+  <button data-ng-click="saveLevel()">Save</button>
+
 </div>

@@ -1,0 +1,17 @@
+@import 'lib/grids';
+
+.row {
+  $zen-column-count: 3;
+  $zen-gutter-width: 10px;
+
+  @include zen-grid-container;
+  width: 90%;
+  margin: 0 auto;
+}
+.one {
+  @include zen-grid-item(1, 1);
+  position: fixed;
+}
+.two-three {
+  @include zen-grid-item(2, 2);
+}

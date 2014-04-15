@@ -1,12 +1,18 @@
 .sprite-bomb {
   background-image: url(../images/sprite.png);
-  background-position: 0px -12px;
+  background-position: 0px 0px;
   width: 30px;
   height: 30px;
 }
 .sprite-jumps_pu {
   background-image: url(../images/sprite.png);
-  background-position: 0px 0px;
-  width: 10px;
-  height: 12px;
+  background-position: 0px -30px;
+  width: 30px;
+  height: 30px;
+}
+.sprite-nitro {
+  background-image: url(../images/sprite.png);
+  background-position: 0px -60px;
+  width: 30px;
+  height: 30px;
 }
