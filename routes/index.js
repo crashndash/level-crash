@@ -18,7 +18,7 @@ var saveLevel = function(req, res) {
       return;
     }
     // Add IP address of user to the object.
-    db.set(name, req.body.level, function(e, r) {
+    db.set(name, level, function(e, r) {
       if (!e) {
         res.json(req.body.level);
         return;
