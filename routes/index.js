@@ -9,7 +9,7 @@ var saveLevel = function(req, res) {
       res.send(500);
       return;
     }
-    var level = req.body.level;
+    var level = req.body.level || {};
     level.ip = ip(req);
     level.name = name;
     level.tagline = 'By ' + level.author;
@@ -58,8 +58,13 @@ var getLevel = function(req, res) {
   });
 };
 
+var admin = function(req, res) {
+  res.redirect('/');
+};
+
 module.exports = {
   saveLevel: saveLevel,
   listLevels: listLevels,
-  getLevel: getLevel
+  getLevel: getLevel,
+  admin: admin
 };

@@ -1,22 +1,36 @@
+// External modules.
 var express = require('express');
-var app = express();
-app.namespace = 'levelcrasher';
-module.exports = app;
+var bodyParser = require('body-parser');
 var yaml = require('js-yaml');
 var fs = require('fs');
 var util = require('util');
 // Wooo. Colors.
 require('colors');
 
+// Internal modules.
+var ip = require('../lib/ip');
+
+// app.
+var app = express();
+app.banned = {};
+app.use(function(req, res, next) {
+  // First barrier. Ignore everyone on the ban list.
+  var userIp = ip(req);
+  if (app.banned[userIp]) {
+    res.send(403);
+    return;
+  }
+  next();
+});
+app.use(bodyParser());
+app.namespace = 'levelcrasher';
+module.exports = app;
+
 // Redis db.
 var db = require('../lib/db');
 
 // Some routes.
 var routes = require('../routes');
-
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(app.router);
 
 // @todo. Introduce more loggers.
 
@@ -40,23 +54,34 @@ app.log = function(str, severity) {
 
 // Read app config.
 try {
-  app.config = yaml.safeLoad(fs.readFileSync('../config.yml', 'utf8'));
+  app.config = yaml.safeLoad(fs.readFileSync('./config.yml', 'utf8'));
 }
 catch(err) {
   app.log('No config.yml file found. Using default.config.yml for now. This is most likely not what you want to do.', 'w');
   app.config = yaml.safeLoad(fs.readFileSync('./default.config.yml', 'utf8'));
 }
+var auth = require('../lib/auth');
 
-app.use(express.static(__dirname + '/../static'));
-
-app.get('/', function(req, res){
-  fs.readFile(__dirname + '/../static/index.html', 'utf8', function(err, text){
+var indexHtml = function(req, res){
+  fs.readFile(__dirname + '/../static/index.html', 'utf8', function(err, text) {
     res.send(text);
   });
-});
+};
+
+// API methods
 app.get('/api/level', routes.listLevels);
 app.get('/api/level/:name', routes.getLevel);
 app.post('/api/level', routes.saveLevel);
+
+// Index route, and angular paths.
+app.get('/', indexHtml);
+app.get('/level/:level', indexHtml);
+
+// Admin path.
+app.get('/admin', auth, routes.admin);
+
+app.use(express.static(__dirname + '/../static'));
+
 app.start = function() {
   // Boot up redis db client.
   db.init(app.config.redis);
