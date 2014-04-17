@@ -1,4 +1,7 @@
 port: 4000
+admin:
+  user: "admin"
+  password: "secret"
 redis:
   host: 'localhost'
   port: 6379
