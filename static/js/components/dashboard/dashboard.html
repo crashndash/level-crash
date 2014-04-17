@@ -1,4 +1,10 @@
 <div class="adders">
+  <label for="levellength">Length:</label>
+  <input id="levellength" min="40" name="levelLength" max="150" data-ng-model="level.length" type="number" />
+  <div class="buttons">
+    <button class="wide" data-ng-click="editInfo()">Edit</button>
+    <button class="wide" data-ng-click="saveLevel()">Save</button>
+  </div>
   <div class="pu-wrapper adder-wrapper">
     <div data-ng-repeat="(p, v) in possiblePowerUps">
       <div class="adder-block" data-ng-class="{'active': isElementActive('powerup', p)}">
@@ -14,6 +20,15 @@
       </div>
     </div>
   </div>
-  <button data-ng-click="saveLevel()">Save</button>
 
+  <div class="other-wrapper adder-wrapper">
+    <div data-ng-repeat="(b, v) in possibleObstacles">
+      <div class="adder-block" data-ng-class="{'active': isElementActive('obstacle', b)}">
+        <div class="block no-margin sprite-{{b}}" data-ng-click="setElementActive('obstacle', b)"></div>
+      </div>
+    </div>
+    <div class="adder-block" data-ng-class="{'active': isElementActive('swarm', true)}">
+      <div class="block no-margin sprite-swarm" data-ng-click="setElementActive('swarm', true)"></div>
+    </div>
+  </div>
 </div>

@@ -3,7 +3,13 @@
 .row {
   $zen-column-count: 3;
   $zen-gutter-width: 10px;
+  background: #fff;
 
+  @include zen-grid-container;
+  width: 90%;
+  margin: 0 auto;
+}
+.top-bar .inner {
   @include zen-grid-container;
   width: 90%;
   margin: 0 auto;

@@ -1,3 +1,4 @@
+<div class="finishline"></div>
 <div class="segment" data-ng-cloak data-ng-repeat="road in makeRoads() track by $index">
   <div class="segment-resizer" style="height: {{getHeight($index)}}px" jui:resizable event:resize="roadResized" opt:maxWidth="150" opt:minHeight="30" opt:maxHeight="120" opt:minWidth="150"></div>
   <div class="side-resizer" jui:resizable
@@ -19,20 +20,23 @@
       data-index="{{$index}}"
       data-side="1">
   </div>
-  <svg class="svg-side left" height="{{getHeight($index)}}" width="80">
-    <polygon points="0,0 {{getWidth(0, $index - 1)}},0 {{getWidth(0, $index)}},100 0,100" style="fill:green"></polygon>
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-side left" ng-attr-height="{{getHeight($index)}}">
+    <polygon ng-attr-points="0,0 {{getWidth(0, $index - 1)}},0 {{getWidth(0, $index)}},100 0,100" style="fill:green"></polygon>
   </svg>
-  <svg class="svg-side right" height="{{getHeight($index)}}" width="80">
-    <polygon points="{{getSvgPoints(1, $index)}}" style="fill:green"></polygon>
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="svg-side right" ng-attr-height="{{getHeight($index)}}">
+    <polygon ng-attr-points="{{getSvgPoints(1, $index)}}" style="fill:green"></polygon>
   </svg>
   <div ng-if="hasPowerup($index)" class="road-powerup">
-    <div class="powerup sprite-{{ powerUp($index) }}"></div>
+    <div class="powerup sprite-{{ powerUp($index) }}" data-ng-click="addElement($index)"></div>
   </div>
   <div class="road-block" ng-if="hasBlock($index)">
-    <div class="inside block-{{block($index)}}"  data-ng-click="addElement($index)"></div>
+    <div class="inside block-{{block($index)}}" data-ng-click="addElement($index)"></div>
   </div>
-  <div ng-if="hasSwarm($index)">
-    <div class="swarm"></div>
+  <div ng-if="hasSwarm($index)" class="road-swarm">
+    <div class="swarm sprite-swarm" data-ng-click="addElement($index)"></div>
+  </div>
+  <div ng-if="hasObstacle($index)" class="road-obstacle">
+    <div class="obstacle sprite-{{obstacle($index)}}"></div>
   </div>
   <div class="inner-drop" data-ng-click="addElement($index)"></div>
 </div>

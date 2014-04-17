@@ -1,11 +1,11 @@
 ;(function(angular) {
   angular.module('levelCrash.controllers')
-  .controller('mainCtrl', function ($scope, $timeout, $http) {
+  .controller('levelCtrl', function ($scope, $timeout, $http, $routeParams) {
     var roads = [];
     var lastlevelLength;
     var activeElement;
     var level = {
-      //"obstacles": {},
+      "obstacles": {},
       //"jumpDuration": 1.5,
       //"powerFreq": 0,
       //"obstacleFreq": 0,
@@ -27,23 +27,42 @@
       "roadAlters": {},
       //"predefObstacles": {},
       //"jumpHeight": 2,
-      "swarms": [],
+      "swarms": {},
       //"enemyVariations": ["police"]
     };
+    var levelName = $routeParams.level;
     level.powerups = {};
-    // Make the level as long as the length says.
-    var possiblePowerUps = {
-      nitro: true,
-      bomb: true,
-      jumps_pu: true
-    };
+    $http.get('/api/level/' + levelName)
+    .success(function(d) {
+      console.log(d);
+      $.extend(level, d);
+      //$.extend(level.blocks, d.blocks);
+      //$.extend(level.offsets, d.offsets);
+      //$.extend(level.powerups, d.powerups);
+      //$.extend(level.roadAlters, d.roadAlters);
+      //$.extend(level.swarms, d.swarms);
+      console.log(level);
+    })
+    .error(function() {
+      alert('Something went wrong, sorry!');
+    });
     $scope.possibleBlocks = {
       bricks: true,
       water: true,
       grass: true,
       fire: true
     };
-    $scope.possiblePowerUps = possiblePowerUps;
+    $scope.possibleObstacles = {
+      hole: true,
+      wheel: true,
+      rock: true
+    };
+    $scope.possiblePowerUps = {
+      nitro: true,
+      bomb: true,
+      jumps_pu: true,
+      invincible: true
+    };
     $scope.level = level;
     $scope.makeRoads = function() {
       if (lastlevelLength === parseInt($scope.level.length, 10)) {
@@ -69,8 +88,31 @@
       var level = $scope.level;
       var d = level.length - index;
       var pu = level.powerups[d];
-      if (possiblePowerUps[pu]) {
+      if ($scope.possiblePowerUps[pu]) {
         return pu;
+      }
+      return false;
+    };
+    $scope.hasSwarm = function(index) {
+      var l = $scope.level;
+      if (l.swarms && l.swarms[l.length - index]) {
+        return true;
+      }
+      return false;
+    };
+    $scope.hasObstacle = function(index) {
+      var l = $scope.level;
+      if (l.obstacles && l.obstacles[l.length - index]) {
+        return true;
+      }
+      return false;
+    };
+    $scope.obstacle = function(index) {
+      var level = $scope.level;
+      var d = level.length - index;
+      var o = level.obstacles[d];
+      if ($scope.possibleObstacles[o]) {
+        return o;
       }
       return false;
     };
@@ -179,24 +221,30 @@
       }
       return 0;
     };
+    var sideResized = function(side, index, newVal, skipDigest) {
+      var d = level.length - index;
+      level.offsets[d] = level.offsets[d] || {};
+      level.offsets[d][side] = newVal;
+      if (!skipDigest) {
+        $scope.$digest();
+      }
+    };
     $scope.sideResized = function(e, val) {
       // Get index of side.
       var $side = $(e.target);
       var index = $side.attr('data-index');
       var side = $side.attr('data-side');
-      var d = level.length - index;
-      level.offsets[d] = level.offsets[d] || {};
-      level.offsets[d][side] = (val.size.width * 2);
-      $scope.$digest();
+      var newVal = (val.size.width * 2);
+      sideResized(side, index, newVal);
     };
     var saveData = function() {
       // Empty names not allowed.
-      if (!$scope.name || $scope.name === '') {
+      if (!$scope.level.name || $scope.level.name === '') {
         return false;
       }
       return $http.post('/api/level', {
         level: $scope.level,
-        name: $scope.name
+        name: $scope.level.name
       });
     };
     $scope.saveLevel = function() {
@@ -224,19 +272,29 @@
         value: value
       };
     };
+
+    // Immidiately set something smart as active, so it shows.
+    $scope.setElementActive('block', 'bricks');
     $scope.addElement = function(index) {
+      console.log('trying to add at index' + index);
+      console.log(activeElement);
       if (!activeElement || !activeElement.type || !activeElement.value) {
         return;
       }
       // Use as toggle if there is something there already.
       var delta = (level.length - parseInt(index, 10));
-      if ($scope.level.blocks[delta]) {
-        delete $scope.level.blocks[delta];
-        return;
-      }
-      if ($scope.level.powerups[delta]) {
-        delete $scope.level.powerups[delta];
-        return;
+      var possibleToggles = [
+        'blocks',
+        'powerups',
+        'swarms',
+        'obstacles'
+      ];
+      for (i = 0, len = possibleToggles.length; i < len; i++) {
+        var p = possibleToggles[i];
+        if ($scope.level[p][delta]) {
+          delete $scope.level[p][delta];
+          return;
+        }
       }
       $scope.level[activeElement.type + 's'][delta] = activeElement.value;
     };
@@ -244,22 +302,92 @@
       return (activeElement && activeElement.type === type && activeElement.value === value);
     };
 
-    $scope.step = 1;
+    $scope.swipeLeft = function(index, event) {
+      var clientX;
+      if (event && event.changedTouches && event.changedTouches[0] && event.changedTouches[0].clientX) {
+        clientX = event.changedTouches[0].clientX;
+      }
+      else {
+        return;
+      }
+      // If the swipe ended up on the left side of 1/3 of the screen, edit left
+      //side of road
+      var width = window.innerWidth;
+      var side, newVal;
+      if (width / 2.5 > clientX) {
+        // Fake a resize event.
+        side = 0;
+        newVal = 40;
+        if (level.offsets[level.length - index] && level.offsets[level.length - index][side]) {
+          newVal = level.offsets[level.length - index][side] - 20;
+        }
+      }
+      else {
+        side = 1;
+        newVal = 60;
+        if (level.offsets[level.length - index] && level.offsets[level.length - index][side]) {
+          newVal = level.offsets[level.length - index][side] + 20;
+        }
+      }
+      sideResized(side, index, newVal, true);
+    };
+    $scope.swipeRight = function(index, event) {
+      var clientX;
+      if (event && event.changedTouches && event.changedTouches[0] && event.changedTouches[0].clientX) {
+        clientX = event.changedTouches[0].clientX;
+      }
+      else {
+        return;
+      }
+      // If the swipe ended up on the left side of 1/3 of the screen, edit left
+      //side of road
+      var width = window.innerWidth;
+      var side, newVal;
+      console.log(clientX);
+      if (width - width / 3.5 > clientX) {
+        // Fake a resize event.
+        side = 0;
+        newVal = 70;
+        if (level.offsets[level.length - index] && level.offsets[level.length - index][side]) {
+          newVal = level.offsets[level.length - index][side] + 20;
+        }
+      }
+      else {
+        side = 1;
+        newVal = 10;
+        if (level.offsets[level.length - index] && level.offsets[level.length - index][side]) {
+          newVal = level.offsets[level.length - index][side] - 20;
+        }
+      }
+      sideResized(side, index, newVal, true);
+    };
+  });
+
+  angular.module('levelCrash.controllers')
+  .controller('mainCtrl', function ($scope, $location, $http) {
+
     $scope.tryStepTwo = function() {
       // Validate a couple of things.
-      if (!$scope.name || $scope.name.length === 0 || $scope.name.length > 15) {
+      if (!$scope.name || $scope.name.length === 0 || $scope.name.length > 12) {
         return;
       }
-      if (!$scope.level.author|| $scope.level.author.length === 0 || $scope.level.author.length > 15) {
+      if (!$scope.author|| $scope.author.length === 0 || $scope.author.length > 12) {
         return;
       }
-      var s = saveData();
+      var s = $http.post('/api/level', {
+        name: $scope.name,
+        level: {
+          author: $scope.author
+        }
+      });
       if (!s) {
         alert('Something went wrong!');
         return;
       }
-      s.success(function() {
+      s.success(function(d) {
+        console.log(d);
         $scope.step = 2;
+        $location.path('/level/' + $scope.name);
       })
       .error(function() {
         alert('Something went wrong!');

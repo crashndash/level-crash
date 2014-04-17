@@ -2,6 +2,7 @@
 
   angular.module('levelCrash', [
     'ngRoute',
+    'ngTouch',
     'levelCrash.controllers',
     'levelCrash.directives',
     'jui'
@@ -11,7 +12,11 @@
     $locationProvider.html5Mode(true);
     $routeProvider.when('/', {
       templateUrl: '/partials/main.html',
-      controller: 'mainCtrl'});
+      controller: 'mainCtrl'})
+    .when('/level/:level', {
+      templateUrl: '/partials/level.html',
+      controller: 'levelCtrl'
+    });
     $routeProvider.otherwise({redirectTo: '/'});
   });
 

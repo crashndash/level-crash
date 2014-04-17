@@ -1,0 +1,94 @@
+.finishline {
+  background: url(img/finish.png);
+  height: 24px;
+  background-size: 8px 8px;
+}
+.roads {
+  background: darken($green, 5%);
+}
+.road-obstacle,
+.road-swarm,
+.road-powerup {
+  height: 100%;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.road-wrapper {
+  width: 150px;
+  margin: 0 auto;
+}
+.segment {
+  .powerup,
+  .obstacle,
+  .swarm,
+  .block {
+    position: absolute;
+    opacity: 1;
+    z-index: 88;
+    bottom: 40%;
+    right: 50%;
+  }
+}
+
+.road-block {
+  position: absolute;
+  z-index: 99;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  .inside {
+    background-size: 20px 20px;
+    background-repeat: repeat;
+    width: 100%;
+    height: 100%;
+  }
+}
+.inner-drop {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  z-index: 25;
+}
+.segment-resizer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url(../images/level_themes/grass/road.png);
+  z-index: 1;
+}
+.segment {
+  background-size: 40px 40px;
+  //overflow-x: hidden;
+  position: relative;
+  height: 100px;
+}
+.svg-side {
+  position: relative;
+  z-index: 2;
+  width: 80px;
+  &.right {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+.side {
+  height: 100%;
+  position: relative;
+}
+.side-resizer {
+  height: 100%;
+  position: absolute;
+  width: 30px;
+}
+.side-resizer.right {
+  right: 0;
+}
+.side.right-side {
+  right: 0;
+  top: 0;
+  position: absolute;
+}

@@ -1,31 +1,12 @@
-<div data-ng-show="step === 1">
-  <div class="row">
-    <form name="admin">
-      <input data-ng-model="name" type="text" placeholder="Level name" required />
-      <input data-ng-model="level.author" type="text" placeholder="Your name" required />
-      <input min="40" name="levelLength" max="150" data-ng-model="level.length" type="number" />
-      <span ng-show="admin.levelLength.$error.min || admin.levelLength.$error.max">
-        Please supply a number between 40 and 150.
-      </span>
-      <span ng-show="admin.levelLength.$error.integer">
-        Please supply a valid number.
-      </span>
-      <button data-ng-click="tryStepTwo()">Continue</button>
-    </form>
+<div class="top-bar">
+  <div class="inner">
+    <span class="level-name">Level editor</span>
   </div>
 </div>
-<div data-ng-show="step === 2">
-  <div class="top-bar">
-    <span class="level-name">{{name}}</span>
-    <span class="level-author">by {{level.author}}</span>
-    <span class="level-length">Length: {{level.length}}</span>
-  </div>
-  <div class="row">
-    <div data-dashboard class="one"></div>
-    <div class="two-three">
-      <div class="road-wrapper">
-        <div data-roads></div>
-      </div>
-    </div>
-  </div>
+<div class="row padded">
+  <form class="index">
+    <input data-ng-model="name" type="text" placeholder="Level name" required />
+    <input data-ng-model="author" type="text" placeholder="Your name" required />
+    <button class="wide" data-ng-click="tryStepTwo()">Continue</button>
+  </form>
 </div>
