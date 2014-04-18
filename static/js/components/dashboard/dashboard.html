@@ -1,8 +1,13 @@
-<div class="adders">
+<div data-ng-show="edit">
   <label for="levellength">Length:</label>
   <input id="levellength" min="40" name="levelLength" max="150" data-ng-model="level.length" type="number" />
+  <label for="levelauthor">Your name:</label>
+  <input id="levelauthor" name="levelauthor" data-ng-model="level.author" />
+  <button class="wide" data-ng-click="edit = false">OK</button>
+</div>
+<div data-ng-show="!edit" class="adders">
   <div class="buttons">
-    <button class="wide" data-ng-click="editInfo()">Edit</button>
+    <button class="wide" data-ng-click="edit = true">Edit</button>
     <button class="wide" data-ng-click="saveLevel()">Save</button>
   </div>
   <div class="pu-wrapper adder-wrapper">
