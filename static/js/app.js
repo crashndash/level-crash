@@ -5,7 +5,8 @@
     'ngTouch',
     'levelCrash.controllers',
     'levelCrash.directives',
-    'jui'
+    'jui',
+    'ajaxLoader'
   ])
 
   .config(function($routeProvider, $locationProvider) {
