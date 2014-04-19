@@ -1,6 +1,6 @@
 ;(function(angular) {
   angular.module('levelCrash.controllers')
-  .controller('levelCtrl', function ($scope, $timeout, $http, $routeParams) {
+  .controller('levelCtrl', function ($scope, $timeout, $http, $routeParams, $location) {
     var roads = [];
     var lastlevelLength;
     var activeElement;
@@ -34,16 +34,21 @@
     level.powerups = {};
     $http.get('/api/level/' + levelName)
     .success(function(d) {
-      console.log(d);
       $.extend(level, d);
       //$.extend(level.blocks, d.blocks);
       //$.extend(level.offsets, d.offsets);
       //$.extend(level.powerups, d.powerups);
       //$.extend(level.roadAlters, d.roadAlters);
       //$.extend(level.swarms, d.swarms);
-      console.log(level);
+      $scope.loaded = true;
     })
-    .error(function() {
+    .error(function(e, c) {
+      // Redirect back to start if it was a 404.
+      if (c === 404) {
+        alert('Something went wrong, bacause we can not find this level. Sorry!');
+        $location.path('/');
+        return;
+      }
       alert('Something went wrong, sorry!');
     });
     $scope.possibleBlocks = {
@@ -385,8 +390,6 @@
         return;
       }
       s.success(function(d) {
-        console.log(d);
-        $scope.step = 2;
         $location.path('/level/' + $scope.name);
       })
       .error(function() {
