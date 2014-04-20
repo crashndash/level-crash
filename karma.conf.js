@@ -20,6 +20,7 @@ module.exports = function(config) {
       'static/js/app.js',
       'static/js/components/**/*.js',
       'static/js/controllers.js',
+      'test/karma/lib/angular/*.js',
       'test/karma/*.js'
     ],
 
@@ -33,15 +34,21 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-
+      'static/js/*.js': 'coverage',
+      'static/js/components/**/*.js': 'coverage'
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
 
+
+    coverageReporter: {
+      type : 'lcov',
+      dir : 'coverage/karma/'
+    },
 
     // web server port
     port: 9876,
@@ -70,7 +77,8 @@ module.exports = function(config) {
     singleRun: true,
     plugins: [
       'karma-mocha',
-      'karma-phantomjs-launcher'
+      'karma-phantomjs-launcher',
+      'karma-coverage'
     ]
   });
 };
