@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(bodyParser());
-app.namespace = 'levelcrasher';
+app.namespace = process.env.LEVEL_CRASHER_NS || 'levelcrasher';
 module.exports = app;
 
 // Redis db.
@@ -76,6 +76,9 @@ app.post('/api/level', routes.saveLevel);
 // Index route, and angular paths.
 app.get('/', indexHtml);
 app.get('/level/:level', indexHtml);
+
+// Used for getting the user's levels.
+app.get('/api/mylevels', routes.myLevels);
 
 // Admin path.
 app.get('/admin', auth, routes.admin);

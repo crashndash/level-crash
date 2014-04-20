@@ -10,6 +10,7 @@ var saveLevel = function(req, res) {
       return;
     }
     var level = req.body.level || {};
+    // Add IP address of user to the object.
     level.ip = ip(req);
     level.name = name;
     level.tagline = 'By ' + level.author;
@@ -17,10 +18,13 @@ var saveLevel = function(req, res) {
       res.send(400, 'Name is taken. Sorry!');
       return;
     }
-    // Add IP address of user to the object.
     db.set(name, level, function(e) {
       if (!e) {
         res.json(req.body.level);
+        // Also add to ip list of levels
+
+        // @todo, RLY? IP?
+        db.sadd(level.ip, name);
         return;
       }
       res.send(500);
@@ -62,9 +66,22 @@ var admin = function(req, res) {
   res.redirect('/');
 };
 
+var myLevels = function(req, res) {
+  // Try to see what a list of levels this user owns.
+  var userIp = ip(req);
+  db.smembers(userIp, function(e, r) {
+    if (e) {
+      res.send(500);
+      return;
+    }
+    res.json(r);
+  });
+};
+
 module.exports = {
   saveLevel: saveLevel,
   listLevels: listLevels,
   getLevel: getLevel,
-  admin: admin
+  admin: admin,
+  myLevels: myLevels
 };
