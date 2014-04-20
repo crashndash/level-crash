@@ -10,4 +10,14 @@
     <input data-ng-model="author" type="text" placeholder="Your name" required />
     <button class="wide" data-ng-click="tryStepTwo()">Continue</button>
   </form>
+
+  <!-- My levels -->
+  <div class="three-three">
+    <h1 ng-show="myLevels.length > 0">My levels</h1>
+    <ul class="my-levels">
+      <li data-ng-repeat="level in myLevels">
+        <a data-ng-href="/level/{{level}}">{{level}}</a>
+      </li>
+    </ul>
+  </div>
 </div>

@@ -371,6 +371,17 @@
   angular.module('levelCrash.controllers')
   .controller('mainCtrl', function ($scope, $location, $http) {
 
+    // Try to find levels that this person owns.
+    $http.get('/api/mylevels')
+    .success(function(d) {
+      $scope.myLevels = d;
+    })
+    .error(function(e, c) {
+      console.log(e, c);
+    });
+
+    $scope.errors = [];
+
     $scope.tryStepTwo = function() {
       // Validate a couple of things.
       if (!$scope.name || $scope.name.length === 0 || $scope.name.length > 12) {
