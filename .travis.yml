@@ -5,3 +5,6 @@ node_js:
 script:
   - make test
   - make test-front
+
+services:
+  - redis-server
