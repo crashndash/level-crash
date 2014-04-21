@@ -32,7 +32,8 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "chai": "^1.9.1",
     "coveralls": "^2.10.0",
-    "karma-coverage": "^0.2.1"
+    "karma-coverage": "^0.2.1",
+    "gulp-ngmin": "^0.2.0"
   },
   "scripts": {
     "test": "make test",

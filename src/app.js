@@ -63,7 +63,11 @@ catch(err) {
 var auth = require('../lib/auth');
 
 var indexHtml = function(req, res){
-  fs.readFile(__dirname + '/../static/index.html', 'utf8', function(err, text) {
+  var filename = 'index.html';
+  if (process.env.NODE_ENV === 'production') {
+    filename = 'index.prod.html';
+  }
+  fs.readFile(__dirname + '/../static/' + filename, 'utf8', function(err, text) {
     res.send(text);
   });
 };

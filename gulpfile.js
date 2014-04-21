@@ -4,9 +4,11 @@ var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
 var prefix = require('gulp-autoprefixer');
 var spritesmith = require('gulp.spritesmith');
+var ngmin = require('gulp-ngmin');
 
 var paths = {
-  libs: ['static/js/lib/vendor/*.js', 'static/js/lib/*.js']
+  libs: ['static/js/lib/vendor/*.js', 'static/js/lib/*.js'],
+  app: ['static/js/app.js', 'static/js/components/**/*.js', 'static/js/controllers.js']
 };
 
 // Do things with stylesheets.
@@ -14,10 +16,18 @@ var paths = {
 
 gulp.task('scripts', function() {
   // Minify and copy all JavaScript.
-  return gulp.src(paths.libs)
+  gulp.src(paths.libs)
     .pipe(uglify())
     .pipe(concat('lib.min.js'))
     .pipe(gulp.dest('static/js/build/lib'));
+});
+
+gulp.task('appscripts', function() {
+  gulp.src(paths.app)
+    .pipe(concat('app.min.js'))
+    .pipe(ngmin())
+    .pipe(uglify())
+    .pipe(gulp.dest('static/js/build/app'));
 });
 
 gulp.task('sprite', function () {
@@ -28,8 +38,6 @@ gulp.task('sprite', function () {
     imgPath: '../images/sprite.png',
     cssOpts: {
       cssClass: function (item) {
-        // `item` has `x`, `y`, `width`, `height`, `name`, `image`, and more
-        // It is suggested to `console.log` output
         return '.sprite-' + item.name;
       }
     }
@@ -41,10 +49,10 @@ gulp.task('sprite', function () {
 gulp.task('scss', function() {
   gulp.src('static/css/scss/style.scss')
     .pipe(sass({
+      outputStyle: 'compressed',
       errLogToConsole: true,
       error: function(err) {
         console.log(err);
-        console.log('satan');
       }
     }))
     .pipe(prefix("last 1 version", "> 1%", "ie 8", "ie 7"))
