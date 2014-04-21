@@ -88,7 +88,9 @@ app.get('/api/mylevels', routes.myLevels);
 app.get('/admin', auth, routes.admin);
 app.delete('/admin/level/:name', auth, routes.adminDelete);
 
-app.use(express.static(__dirname + '/../static'));
+app.use(express.static(__dirname + '/../static', {
+  maxAge: 3600000
+}));
 
 app.start = function() {
   // Boot up redis db client.
