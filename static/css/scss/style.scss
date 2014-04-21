@@ -31,3 +31,13 @@ input {
   border: 2px solid $blue;
   font-size: 14px;
 }
+a.my-level {
+  font-family: $font;
+  display: block;
+  text-decoration: none;
+  color: #fff;
+  background: $blue;
+  margin: 10px auto;
+  padding: 6px 12px;
+  box-shadow: 2px 2px 0 #333;
+}

@@ -14,10 +14,9 @@
   <!-- My levels -->
   <div class="three-three">
     <h1 ng-show="myLevels.length > 0">My levels</h1>
-    <ul class="my-levels">
-      <li data-ng-repeat="level in myLevels">
-        <a data-ng-href="/level/{{level}}">{{level}}</a>
-      </li>
+      <div data-ng-repeat="level in myLevels">
+        <a class="my-level" data-ng-href="/level/{{level}}">{{level}}</a>
+      </div>
     </ul>
   </div>
 </div>

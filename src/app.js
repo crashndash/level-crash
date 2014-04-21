@@ -86,6 +86,7 @@ app.get('/api/mylevels', routes.myLevels);
 
 // Admin path.
 app.get('/admin', auth, routes.admin);
+app.delete('/admin/level/:name', auth, routes.adminDelete);
 
 app.use(express.static(__dirname + '/../static'));
 

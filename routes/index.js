@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 var db = require('../lib/db');
 var ip = require('../lib/ip');
 
@@ -63,7 +65,20 @@ var getLevel = function(req, res) {
 };
 
 var admin = function(req, res) {
-  res.redirect('/');
+  fs.readFile(__dirname + '/../static/admin.html', 'utf8', function(err, text) {
+    res.send(text);
+  });
+};
+
+var adminDelete = function(req, res) {
+  // Find name to delete.
+  var level = req.params.name;
+  db.del(level, function(e, r) {
+    if (e) {
+      res.send(500, e);
+    }
+    res.send(204);
+  });
 };
 
 var myLevels = function(req, res) {
@@ -83,5 +98,6 @@ module.exports = {
   listLevels: listLevels,
   getLevel: getLevel,
   admin: admin,
+  adminDelete: adminDelete,
   myLevels: myLevels
 };

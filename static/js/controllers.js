@@ -1,6 +1,6 @@
 ;(function(angular) {
   angular.module('levelCrash.controllers')
-  .controller('levelCtrl', function ($scope, $timeout, $http, $routeParams, $location) {
+  .controller('levelCtrl', ['$scope', '$timeout', '$http', '$routeParams', '$location', function ($scope, $timeout, $http, $routeParams, $location) {
     var roads = [];
     var lastlevelLength;
     var activeElement;
@@ -366,10 +366,10 @@
       }
       sideResized(side, index, newVal, true);
     };
-  });
+  }]);
 
   angular.module('levelCrash.controllers')
-  .controller('mainCtrl', function ($scope, $location, $http) {
+  .controller('mainCtrl', ['$scope', '$location', '$http', function ($scope, $location, $http) {
 
     // Try to find levels that this person owns.
     $http.get('/api/mylevels')
@@ -407,5 +407,5 @@
         alert('Something went wrong!');
       });
     };
-  });
+  }]);
 })(angular);

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" data-ng-app="levelAdmin">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link href="/css/style.css" rel="stylesheet" />
+    <title>Level crasher</title>
+  </head>
+  <body data-ng-cloak data-ng-controller="adminCtrl" class="admin">
+    <div data-ng-view>
+      <div class="row">
+        <div class="three-three">
+          <div data-ng-repeat="level in levels">
+            <strong>{{level.title}}</strong> by {{level.author}}
+            <div class="actions">
+              <button ng-click="deleteLevel(level.title)">Delete</button>
+              <button ng-click="loadLevel(level.title)">View</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/build/lib/lib.min.js"></script>
+    <script src="/js/admincontroller.js"></script>
+  </body>
+</html>
