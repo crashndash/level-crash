@@ -1,6 +1,6 @@
 ;(function(angular) {
   angular.module('levelCrash.controllers')
-  .controller('levelCtrl', ['$scope', '$timeout', '$http', '$routeParams', '$location', function ($scope, $timeout, $http, $routeParams, $location) {
+  .controller('levelCtrl', ['$scope', '$timeout', '$http', '$routeParams', '$location', '$window', function ($scope, $timeout, $http, $routeParams, $location, $window) {
     var roads = [];
     var lastlevelLength;
     var activeElement;
@@ -45,11 +45,11 @@
     .error(function(e, c) {
       // Redirect back to start if it was a 404.
       if (c === 404) {
-        alert('Something went wrong, bacause we can not find this level. Sorry!');
+        $window.alert('Something went wrong, bacause we can not find this level. Sorry!');
         $location.path('/');
         return;
       }
-      alert('Something went wrong, sorry!');
+      $window.alert('Something went wrong, sorry!');
     });
     $scope.possibleBlocks = {
       bricks: true,
@@ -75,7 +75,7 @@
       }
       roads = [];
       for (var i = 0; i < $scope.level.length; i++) {
-        roads.push('a');
+        roads.push(i);
       }
       lastlevelLength = parseInt($scope.level.length, 10);
       return roads;
@@ -156,21 +156,8 @@
         points.push((80 - w) + ',' + $scope.getHeight(index));
         return points.join(' ');
       };
-      if (side === 1) {
-        return getRightPoints(index);
-      }
-      return getLeftPoints(index);
-    };
-    $scope.getBackgroundImage = function(side, index) {
-      var w = $scope.getWidth(side, index);
-      var pw = $scope.getWidth(side, index - 1);
-      if (w === pw) {
-        return 'green-3.png';
-      }
-      if (w > pw) {
-        return 'green-1.png';
-      }
-      return 'green-2.png';
+      // For some reason I always just use this for right side.
+      return getRightPoints(index);
     };
     $scope.getHeight = function(index) {
       var d = level.length - index;
@@ -178,53 +165,6 @@
         return level.roadAlters[d];
       }
       return 100;
-    };
-    $scope.getBorderTop = function(side, index) {
-      // If the previous segment was wider than this, return the height of the
-      // segment.
-      var width = $scope.getWidth(side, index);
-      var prevWidth = $scope.getWidth(side, index - 1);
-      if (width <= prevWidth) {
-        return $scope.getHeight(index);
-      }
-      return 0;
-
-    };
-    $scope.getBorderBottom = function(side, index) {
-      var width = $scope.getWidth(side, index);
-      var prevWidth = $scope.getWidth(side, index - 1);
-      if (width > prevWidth) {
-        return $scope.getHeight(index);
-      }
-      return 0;
-    };
-    $scope.getBorderLeft = function(side, index, force) {
-      if (side === 0 && !force) {
-        return 0;
-      }
-      // Just return the difference between this one and the last one.
-      var width = $scope.getWidth(side, index);
-      var prevWidth = $scope.getWidth(side, index - 1);
-
-      // I think we always want to return a positive value.
-      var value = prevWidth - width;
-      if (value < 0) {
-        value = value * -1;
-      }
-      else {
-        value = value * 2;
-      }
-      return value;
-    };
-    $scope.getOffsetWidth = function(side, index) {
-      var width = $scope.getWidth(side, index);
-      return width;
-    };
-    $scope.getBorderRight = function(side, index) {
-      if (side === 0) {
-        return $scope.getBorderLeft(side, index, true);
-      }
-      return 0;
     };
     var sideResized = function(side, index, newVal, skipDigest) {
       var d = level.length - index;
@@ -255,20 +195,19 @@
     $scope.saveLevel = function() {
       var s = saveData();
       if (!s) {
-        alert('Something went wrong');
+        $window.alert('Something went wrong');
         return;
       }
-      s.success(function(data) {
-        console.log(data);
+      s.success(function() {
+        // @todo. Do something?
       })
       .error(function(e, c) {
-        console.log(e, c);
         if (c === 400) {
           // Name is taken.
-          alert(e);
+          $window.alert(e);
           return;
         }
-        alert('We had some problems saving this.');
+        $window.alert('We had some problems saving this.');
       });
     };
     $scope.setElementActive = function(type, value) {
@@ -281,8 +220,9 @@
     // Immidiately set something smart as active, so it shows.
     $scope.setElementActive('block', 'bricks');
     $scope.addElement = function(index) {
-      console.log('trying to add at index' + index);
-      console.log(activeElement);
+      if (!index) {
+        return;
+      }
       if (!activeElement || !activeElement.type || !activeElement.value) {
         return;
       }
@@ -306,88 +246,27 @@
     $scope.isElementActive = function(type, value) {
       return (activeElement && activeElement.type === type && activeElement.value === value);
     };
-
-    $scope.swipeLeft = function(index, event) {
-      var clientX;
-      if (event && event.changedTouches && event.changedTouches[0] && event.changedTouches[0].clientX) {
-        clientX = event.changedTouches[0].clientX;
-      }
-      else {
-        return;
-      }
-      // If the swipe ended up on the left side of 1/3 of the screen, edit left
-      //side of road
-      var width = window.innerWidth;
-      var side, newVal;
-      if (width / 2.5 > clientX) {
-        // Fake a resize event.
-        side = 0;
-        newVal = 40;
-        if (level.offsets[level.length - index] && level.offsets[level.length - index][side]) {
-          newVal = level.offsets[level.length - index][side] - 20;
-        }
-      }
-      else {
-        side = 1;
-        newVal = 60;
-        if (level.offsets[level.length - index] && level.offsets[level.length - index][side]) {
-          newVal = level.offsets[level.length - index][side] + 20;
-        }
-      }
-      sideResized(side, index, newVal, true);
-    };
-    $scope.swipeRight = function(index, event) {
-      var clientX;
-      if (event && event.changedTouches && event.changedTouches[0] && event.changedTouches[0].clientX) {
-        clientX = event.changedTouches[0].clientX;
-      }
-      else {
-        return;
-      }
-      // If the swipe ended up on the left side of 1/3 of the screen, edit left
-      //side of road
-      var width = window.innerWidth;
-      var side, newVal;
-      console.log(clientX);
-      if (width - width / 3.5 > clientX) {
-        // Fake a resize event.
-        side = 0;
-        newVal = 70;
-        if (level.offsets[level.length - index] && level.offsets[level.length - index][side]) {
-          newVal = level.offsets[level.length - index][side] + 20;
-        }
-      }
-      else {
-        side = 1;
-        newVal = 10;
-        if (level.offsets[level.length - index] && level.offsets[level.length - index][side]) {
-          newVal = level.offsets[level.length - index][side] - 20;
-        }
-      }
-      sideResized(side, index, newVal, true);
-    };
   }]);
 
   angular.module('levelCrash.controllers')
-  .controller('mainCtrl', ['$scope', '$location', '$http', function ($scope, $location, $http) {
+  .controller('mainCtrl', ['$scope', '$location', '$http', '$window', function ($scope, $location, $http, $window) {
 
     // Try to find levels that this person owns.
     $http.get('/api/mylevels')
     .success(function(d) {
       $scope.myLevels = d;
-    })
-    .error(function(e, c) {
-      console.log(e, c);
     });
-
-    $scope.errors = [];
+    // Normally you would see an error here as well, but we don't really care
+    // in this case.
 
     $scope.tryStepTwo = function() {
       // Validate a couple of things.
       if (!$scope.name || $scope.name.length === 0 || $scope.name.length > 12) {
+        $window.alert('Please choose a level name between 1 and 12 characters.');
         return;
       }
       if (!$scope.author|| $scope.author.length === 0 || $scope.author.length > 12) {
+        $window.alert('Please use a name between 1 and 12 characters.');
         return;
       }
       var s = $http.post('/api/level', {
@@ -396,15 +275,11 @@
           author: $scope.author
         }
       });
-      if (!s) {
-        alert('Something went wrong!');
-        return;
-      }
-      s.success(function(d) {
+      s.success(function() {
         $location.path('/level/' + $scope.name);
       })
       .error(function() {
-        alert('Something went wrong!');
+        $window.alert('Something went wrong!');
       });
     };
   }]);
