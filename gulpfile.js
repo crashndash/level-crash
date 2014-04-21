@@ -11,9 +11,6 @@ var paths = {
   app: ['static/js/app.js', 'static/js/components/**/*.js', 'static/js/controllers.js']
 };
 
-// Do things with stylesheets.
-
-
 gulp.task('scripts', function() {
   // Minify and copy all JavaScript.
   gulp.src(paths.libs)
@@ -66,3 +63,5 @@ gulp.task('watch', function() {
   gulp.watch('static/css/scss/**/*.scss', ['scss']);
 
 });
+
+gulp.task('default', ['scripts', 'scss', 'appscripts']);
