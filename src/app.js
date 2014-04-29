@@ -23,6 +23,8 @@ app.use(function(req, res, next) {
   next();
 });
 app.use(bodyParser());
+
+/* istanbul ignore next */
 app.namespace = process.env.LEVEL_CRASHER_NS || 'levelcrasher';
 module.exports = app;
 
@@ -64,6 +66,7 @@ var auth = require('../lib/auth');
 
 var indexHtml = function(req, res){
   var filename = 'index.html';
+  /* istanbul ignore next */
   if (process.env.NODE_ENV === 'production') {
     filename = 'index.prod.html';
   }

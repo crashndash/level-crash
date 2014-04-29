@@ -5,7 +5,30 @@ var assert = require('assert');
 var should = require('should');
 
 app.config.port = 12345;
+app.config.admin.user = 'admin';
+app.config.admin.password = 'secret';
 app.start();
+
+describe('App generally', function() {
+  it('Should return 403 if user is banned', function(done) {
+    app.banned['127.0.0.1'] = true;
+    request(app)
+    .get('/')
+    .end(function(err, res) {
+      res.status.should.equal(403);
+      app.banned = {};
+      done(err);
+    });
+  });
+  it('Should have a log function', function(done) {
+    app.log.should.be.instanceOf(Function);
+    // Try to invoke it in some ways.
+    app.log('Cool, this is green');
+    app.log('Cool, this is yellow', 'w');
+    app.log('Cool, this is red', 'e');
+    done();
+  });
+});
 
 describe('Index.html', function() {
   it('Should return something on GET /', function(done) {
@@ -92,5 +115,239 @@ describe('/api paths', function() {
       });
 
     });
+  });
+
+  it('Should return "my levels" when wanted', function(done) {
+    request(app)
+    .get('/api/mylevels')
+    .end(function(err, res) {
+      var ls = JSON.parse(res.text);
+      ls.length.should.equal(1);
+      ls[0].should.equal(levelName);
+      done(err);
+    });
+  });
+
+  // And then the admin levels.
+  it('Should return something on /admin', function(done) {
+    request(app)
+    .get('/admin')
+    .set('Authorization', 'Basic YWRtaW46c2VjcmV0')
+    .expect(200, done);
+  });
+
+  it('Should delete the level if we ask it to', function(done) {
+    request(app)
+    .delete('/admin/level/' + levelName)
+    .set('Authorization', 'Basic YWRtaW46c2VjcmV0')
+    .expect(204, done);
+  });
+
+  it('Should have problems responding when errors are occuring', function(done) {
+    this.timeout(10000);
+    // Provoke a couple of errors. For coverage of course.
+    app.config.redis.port = 1234564;
+    app.config.port = 54321;
+    app.start();
+    request(app)
+    .get('/api/level')
+    .expect(500)
+    .end(function() {
+      // And then a couple of more.
+      request(app)
+      .post('/api/level')
+      .expect(500, function() {
+        request(app)
+        .get('/api/level/bogus')
+        .expect(500)
+        .end(function() {
+          request(app)
+          .delete('/admin/level/bogus')
+          .set('Authorization', 'Basic YWRtaW46c2VjcmV0')
+          .expect(500)
+          .end(function() {
+            request(app)
+            .get('/api/mylevels')
+            .expect(500)
+            .end(function() {
+              app.config.redis.port = 6379;
+              done();
+            });
+          });
+        });
+      });
+    });
+  });
+});
+
+describe('IP module', function() {
+  app.config.port = 1234;
+  app.start();
+  var i = require('../lib/ip');
+
+  it('Should return the expected value from a normal request', function() {
+    var expected = 'test' + Math.floor(Math.random() * 1000);
+    var ip = i({
+      header: function() {
+        return false;
+      },
+      connection: {
+        remoteAddress: expected
+      }
+    });
+    ip.should.equal(expected);
+  });
+
+  it('Should return the expected value from a forwarded request', function() {
+    var expected = 'test' + Math.floor(Math.random() * 1000);
+    var ip = i({
+      header: function() {
+        return expected;
+      }
+    });
+    ip.should.equal(expected);
+  });
+});
+describe('DB module', function() {
+  var d = require('../lib/db');
+
+  it('Should expose all excpected functions', function() {
+    d.should.have.property('get');
+    d.should.have.property('set');
+    d.should.have.property('del');
+    d.should.have.property('smembers');
+    d.should.have.property('sadd');
+    d.should.have.property('init');
+    d.should.have.property('list');
+  });
+
+  it('Should not go so well if we init with bad settings', function(done) {
+    // This first one is just for coverage.
+    d.init({port: 2134, host: 'bogus'});
+    var doneDone = false;
+    d.init({port: 2134, host: 'bogus'}, function(err) {
+      should(err).not.equal(null);
+      if (!doneDone) {
+        done();
+        doneDone = true;
+      }
+    });
+  });
+
+  it('Should get and set in an OK manner', function(done) {
+    // Should probably init again, then?
+    d.init(app.config.redis);
+    var testvalue = 'testvalue' + Math.floor(Math.random() * 1000);
+    // For coverage reasons :)
+    d.set();
+    d.set('testkey', testvalue, function() {
+      d.get('testkey', function(e, v) {
+        v.should.equal(testvalue);
+        done(e);
+      });
+    });
+  });
+
+  it('Should error out if we actually saved non-valid JSON', function(done) {
+    var c = require('redis').createClient(app.config.redis);
+    var testkey = 'testkey' + Math.floor(Math.random() * 1000);
+    c.on('ready', function() {
+      c.hset(app.namespace + '.levels', testkey, 'not-valid-json-i-suppose1', function() {
+        d.get(testkey, function(e) {
+          should(e).not.equal(null);
+          done();
+        });
+      });
+    });
+  });
+
+  it('Should delete a key as expected', function(done) {
+    var testkey = 'testkey' + Math.floor(Math.random() * 1000);
+    d.set(testkey, 'value', function(e, v) {
+      d.get(testkey, function(f, w) {
+        w.should.equal('value');
+        d.del(testkey, function() {
+          d.get(testkey, function(g, x) {
+            should(x).equal(null);
+            done(g);
+          });
+        });
+      });
+    });
+  });
+
+  it('Should do as expected when we try to list levels', function(done) {
+    d.list(function(f, s) {
+      s.length.should.not.equal(0);
+      done(f);
+    });
+  });
+
+  it('Should do as expected when looking for something with smembers', function(done) {
+    var testkey = 'saddkey' + Math.floor(Math.random() * 1000);
+    this.timeout(5000);
+    d.sadd(testkey, 'value', function(a, b) {
+      d.smembers(testkey, function(e, r) {
+        r.length.should.equal(1);
+        r[0].should.equal('value');
+        done(e);
+      });
+    });
+  });
+
+});
+
+describe('Auth module', function() {
+  var a = require('../lib/auth');
+
+  // Nicked this from the node-basic-auth tests.
+  function request(authorization) {
+    return {
+      header: function(str) {
+        if (str == 'x-forwarded-for') {
+          return '231123.123';
+        }
+        return {
+          authorization: authorization
+        };
+      },
+      headers: {
+        authorization: authorization
+      }
+    };
+  }
+  function response() {
+    return {
+      setHeader: function() {
+      },
+      writeHead: function() {
+      },
+      end: function() {}
+    };
+  }
+
+  it('Should behave as expected', function(done) {
+    a(request('Basic YWRtaW46c2VjcmV0'), response(), function() {
+      done();
+    });
+  });
+
+  it('Should ban a user after some time.', function(done) {
+    var res = {
+      send: function(code) {
+        if (code === 403) {
+          done();
+        }
+      },
+      setHeader: function() {},
+      writeHead: function() {},
+      end: function() {}
+    };
+    a(request(), res);
+    a(request(), res);
+    a(request(), res);
+    a(request(), res);
+    a(request(), res);
+    a(request(), res);
   });
 });
