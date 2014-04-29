@@ -33,7 +33,8 @@
     "chai": "^1.9.1",
     "coveralls": "^2.10.0",
     "karma-coverage": "^0.2.1",
-    "gulp-ngmin": "^0.2.0"
+    "gulp-ngmin": "^0.2.0",
+    "karma-ng-html2js-preprocessor": "^0.1.0"
   },
   "scripts": {
     "test": "make test",

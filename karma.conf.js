@@ -16,12 +16,16 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       {pattern: 'node_modules/chai/chai.js', include: true},
-      'static/js/build/lib/lib.min.js',
+      'static/js/lib/vendor/*.js',
+      'static/js/lib/*.js',
       'static/js/app.js',
       'static/js/components/**/*.js',
       'static/js/controllers.js',
       'test/karma/lib/angular/*.js',
-      'test/karma/*.js'
+      'test/karma/*.js',
+
+      // Templates
+      'static/js/components/**/*.html'
     ],
 
 
@@ -35,7 +39,8 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'static/js/*.js': 'coverage',
-      'static/js/components/**/*.js': 'coverage'
+      'static/js/components/**/*.js': 'coverage',
+      'static/js/components/**/*.html': 'ng-html2js'
     },
 
 
@@ -78,7 +83,8 @@ module.exports = function(config) {
     plugins: [
       'karma-mocha',
       'karma-phantomjs-launcher',
-      'karma-coverage'
+      'karma-coverage',
+      'karma-ng-html2js-preprocessor'
     ]
   });
 };
