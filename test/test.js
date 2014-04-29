@@ -79,6 +79,15 @@ describe('/api paths', function() {
     });
   });
 
+  it('Should add level when sending POST to /api/level even if it is empty', function(done) {
+    request(app)
+    .post('/api/level')
+    .end(function(err, res) {
+      res.status.should.equal(200);
+      done(err);
+    });
+  });
+
   it('Should return 200 on existent level', function(done) {
     request(app)
     .get('/api/level/' + levelName)
@@ -122,8 +131,8 @@ describe('/api paths', function() {
     .get('/api/mylevels')
     .end(function(err, res) {
       var ls = JSON.parse(res.text);
-      ls.length.should.equal(1);
-      ls[0].should.equal(levelName);
+      ls.length.should.equal(2);
+      ls.should.containEql(levelName);
       done(err);
     });
   });
@@ -222,6 +231,7 @@ describe('DB module', function() {
   });
 
   it('Should not go so well if we init with bad settings', function(done) {
+    this.timeout(5000);
     // This first one is just for coverage.
     d.init({port: 2134, host: 'bogus'});
     var doneDone = false;
