@@ -2,6 +2,7 @@ Level-crash
 ===========
 [![Code Climate](http://img.shields.io/codeclimate/github/eiriksm/level-crash.svg)](https://codeclimate.com/github/eiriksm/level-crash)
 [![Build Status](https://travis-ci.org/eiriksm/level-crash.svg)](https://travis-ci.org/eiriksm/level-crash)
+[![Coverage Status](http://img.shields.io/coveralls/eiriksm/level-crash.svg)](https://coveralls.io/r/eiriksm/level-crash?branch=master)
 [![Dependency Status](https://david-dm.org/eiriksm/level-crash.svg?theme=shields.io)](https://david-dm.org/eiriksm/level-crash)
 
 This is probably going to end up as an open-source level-editor for [Crash n Dash](http://crashndash.com)
