@@ -5,13 +5,21 @@ Level-crash
 [![Coverage Status](http://img.shields.io/coveralls/eiriksm/level-crash.svg)](https://coveralls.io/r/eiriksm/level-crash?branch=master)
 [![Dependency Status](https://david-dm.org/eiriksm/level-crash.svg?theme=shields.io)](https://david-dm.org/eiriksm/level-crash)
 
-This is probably going to end up as an open-source level-editor for [Crash n Dash](http://crashndash.com)
+This is the open-source level-editor for [Crash n Dash](http://crashndash.com), and it can be seen in action at (http://levels.crashndash.com).
 
 ## Development
 ### Requirements
 Requires the following stack to run:
 - Node js
 - Redis
+
+###Installation
+- Clone this repository: `git clone https://github.com/eiriksm/level-crash`
+- Enter the directory: `cd level-crash`
+- Install dependencies: `npm install`
+- Start the server: `node index.js`
+
+The server will by default be available at (http://localhost:4000)
 
 ### Tests
 Tests are run with karma and mocha. All dependencies should get installed with
