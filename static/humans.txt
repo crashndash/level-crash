@@ -1,0 +1,17 @@
+The source for this site can be found at https://github.com/eiriksm/level-crash
+
+Technologies used for back-end:
+
+- Node.js
+- Redis
+- Varnish
+
+Technologies used for front-end:
+
+- Angular.js
+- Sass
+- Gulp
+
+Thanks to all of those guys!
+
+Please feel free to open an issue or send in a pull request.
