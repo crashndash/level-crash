@@ -272,7 +272,8 @@
       var s = $http.post('/api/level', {
         name: $scope.name,
         level: {
-          author: $scope.author
+          author: $scope.author,
+          length: 50
         }
       });
       s.success(function() {
