@@ -6,7 +6,7 @@
       opt:maxWidth="60"
       opt:minHeight="getHeight(road)"
       opt:maxHeight="getHeight(road)"
-      opt:minWidth="0"
+      opt:minWidth="5"
       data-index="{{$index}}"
       data-side="0">
   </div>
@@ -15,7 +15,7 @@
       opt:maxWidth="60"
       opt:minHeight="getHeight(road)"
       opt:maxHeight="getHeight(road)"
-      opt:minWidth="0"
+      opt:minWidth="5"
       opt:handles="'w'"
       data-index="{{$index}}"
       data-side="1">
@@ -39,4 +39,8 @@
     <div class="obstacle sprite-{{obstacle($index)}}"></div>
   </div>
   <div class="inner-drop" data-ng-click="addElement($index)"></div>
+  <div class="icon-right icon" data-ng-click="adjustSide($index, 0, 5)"></div>
+  <div class="icon-left icon" data-ng-click="adjustSide($index, 0, -5)"></div>
+  <div class="icon-right icon right-side" data-ng-click="adjustSide($index, 1, -5)"></div>
+  <div class="icon-left icon right-side" data-ng-click="adjustSide($index, 1, 5)"></div>
 </div>

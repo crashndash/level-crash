@@ -246,6 +246,17 @@
     $scope.isElementActive = function(type, value) {
       return (activeElement && activeElement.type === type && activeElement.value === value);
     };
+
+    $scope.adjustSide = function(index, side, addition) {
+      // Get current value of this side.
+      var d = $scope.level.length - index;
+      var offsets = level.offsets[d] = level.offsets[d] || {};
+      var newVal = (offsets[side] ? offsets[side] : 60) + parseInt(addition, 10);
+      if (newVal > 120 || newVal < 5) {
+        return false;
+      }
+      return sideResized(side, index, newVal, true);
+    };
   }]);
 
   angular.module('levelCrash.controllers')

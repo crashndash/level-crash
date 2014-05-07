@@ -92,3 +92,17 @@
   top: 0;
   position: absolute;
 }
+.segment .icon {
+  position: absolute;
+  z-index: 87;
+  top: 80%;
+  left: -20px;
+  color: #fff;
+  &.icon-left {
+    top: 40%;
+  }
+  &.right-side {
+    right: -20px;
+    left: auto;
+  }
+}

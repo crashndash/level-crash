@@ -8,6 +8,7 @@
 @import 'button';
 @import 'roads';
 @import 'ajax';
+@import 'fontello';
 
 html {
   height: 100%;
@@ -15,6 +16,8 @@ html {
 body {
   background: lighten($blue, 40%);
   min-height: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 .padded {
@@ -40,4 +43,13 @@ a.my-level {
   margin: 10px auto;
   padding: 6px 12px;
   box-shadow: 2px 2px 0 #333;
+}
+.logo {
+  position: absolute;
+  right: 40px;
+  font-size: 3em;
+  top: 5px;
+  a {
+    color: #fff;
+  }
 }
