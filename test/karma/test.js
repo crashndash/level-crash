@@ -260,4 +260,26 @@ describe('levelCtrl', function() {
     mockScope.setElementActive('block', 'water');
     assert.equal(mockScope.isElementActive('block', 'water'), true);
   });
+
+  it('Should do as expected when using arrows to resize', function() {
+    createController();
+    // Make sure we are working with empty offsets from the start.
+    assert.equal(mockScope.level.offsets[1], undefined);
+    assert.equal(mockScope.level.length, 50);
+    // Try to manipulate the offsets.
+    mockScope.adjustSide(49, 1, 5);
+    assert.notEqual(mockScope.level.offsets[1], undefined);
+    assert.equal(mockScope.level.offsets[1][1], 65);
+
+    // Do it again, just to be sure.
+    mockScope.adjustSide(49, 1, 5);
+    assert.notEqual(mockScope.level.offsets[1], undefined);
+    assert.equal(mockScope.level.offsets[1][1], 70);
+
+    // And then something outrageous
+    var test = mockScope.adjustSide(49, 1, 500);
+    assert.equal(test, false);
+    // And it should not have effect.
+    assert.equal(mockScope.level.offsets[1][1], 70);
+  });
 });
