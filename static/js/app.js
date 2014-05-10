@@ -9,7 +9,11 @@
     'ajaxLoader'
   ])
 
-  .config(function($routeProvider, $locationProvider) {
+  .config([
+    '$compileProvider',
+    '$routeProvider',
+    '$locationProvider',
+    function($compileProvider, $routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true);
     $routeProvider.when('/', {
       templateUrl: '/partials/main.html',
@@ -19,7 +23,9 @@
       controller: 'levelCtrl'
     });
     $routeProvider.otherwise({redirectTo: '/'});
-  });
+
+    $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|fb462788903779716):/);
+  }]);
 
   angular.module('levelCrash.controllers', [], function(){});
   angular.module('levelCrash.directives', [], function(){});
