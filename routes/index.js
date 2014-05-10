@@ -16,6 +16,7 @@ var saveLevel = function(req, res) {
     level.ip = ip(req);
     level.name = name;
     level.tagline = 'By ' + level.author;
+    level.timestamp = Date.now();
     if (r && r.ip !== level.ip) {
       res.send(400, 'Name is taken. Sorry!');
       return;
