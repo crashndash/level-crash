@@ -9,8 +9,11 @@
     <div data-ng-view>
       <div class="row">
         <div class="three-three">
-          <div data-ng-repeat="level in levels">
+          <div data-ng-repeat="level in levels | orderBy:predicate:true">
             <strong>{{level.title}}</strong> by {{level.author}}
+            <div class="metadata">
+              Created on {{creation(level.timestamp)}}
+            </div>
             <div class="actions">
               <button ng-click="deleteLevel(level.title)">Delete</button>
               <button ng-click="loadLevel(level.title)">View</button>

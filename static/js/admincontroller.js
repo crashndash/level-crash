@@ -19,5 +19,18 @@
     $scope.loadLevel = function(level) {
       window.location.href = '/level/' + level;
     };
+    $scope.predicate = function(level) {
+      if (!level.timestamp) {
+        return 0;
+      }
+      return level.timestamp;
+    };
+    $scope.creation = function(time) {
+      var d = new Date(time);
+      if (d.toUTCString() === 'Invalid Date') {
+        return 'Unknown';
+      }
+      return d.toUTCString();
+    };
   });
 }(angular));
