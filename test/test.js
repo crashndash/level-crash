@@ -231,7 +231,7 @@ describe('DB module', function() {
   });
 
   it('Should not go so well if we init with bad settings', function(done) {
-    this.timeout(5000);
+    this.timeout(10000);
     // This first one is just for coverage.
     d.init({port: 2134, host: 'bogus'});
     var doneDone = false;

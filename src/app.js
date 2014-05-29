@@ -13,15 +13,6 @@ var ip = require('../lib/ip');
 // app.
 var app = express();
 app.banned = {};
-app.use(function(req, res, next) {
-  // First barrier. Ignore everyone on the ban list.
-  var userIp = ip(req);
-  if (app.banned[userIp]) {
-    res.send(403);
-    return;
-  }
-  next();
-});
 app.use(bodyParser());
 
 /* istanbul ignore next */
@@ -53,6 +44,18 @@ app.log = function(str, severity) {
   }
   console.log(new Date().toString().yellow, severityToColor(severity, str));
 };
+app.use(function(req, res, next) {
+  // First barrier. Ignore everyone on the ban list.
+  var userIp = ip(req);
+  if (app.banned[userIp]) {
+    app.log('User is banned, and told so. User ip: %s', userIp);
+    app.log('Current ban list:');
+    app.log(userIp);
+    res.send(403);
+    return;
+  }
+  next();
+});
 
 // Read app config.
 try {
