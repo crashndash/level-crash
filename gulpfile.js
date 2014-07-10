@@ -5,6 +5,7 @@ var sass = require('gulp-sass');
 var prefix = require('gulp-autoprefixer');
 var spritesmith = require('gulp.spritesmith');
 var ngmin = require('gulp-ngmin');
+var through = require('through2');
 
 var paths = {
   libs: ['static/js/lib/vendor/*.js', 'static/js/lib/*.js'],
@@ -62,6 +63,23 @@ gulp.task('watch', function() {
   // Watch .scss files
   gulp.watch('static/css/scss/**/*.scss', ['scss']);
 
+});
+
+gulp.task('deploy', function() {
+  gulp.src('static/index.prod.html')
+  .pipe(through.obj(function(file, encoding, callback) {
+    var s = String(file.contents);
+    try {
+      s = s.replace(/DEPLOY_CACHE/g, Date.now());
+      file.contents = new Buffer(s);
+      this.push(file);
+      callback();
+    }
+    catch(e) {
+      callback(e);
+    }
+  }))
+  .pipe(gulp.dest('static'));
 });
 
 gulp.task('default', ['scripts', 'scss', 'appscripts']);

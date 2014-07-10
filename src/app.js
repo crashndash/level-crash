@@ -48,7 +48,7 @@ app.use(function(req, res, next) {
   // First barrier. Ignore everyone on the ban list.
   var userIp = ip(req);
   if (app.banned[userIp]) {
-    app.log('User is banned, and told so. User ip: %s', userIp);
+    app.log(util.format('User is banned, and told so. User ip: %s', userIp));
     app.log('Current ban list:');
     app.log(userIp);
     res.send(403);
