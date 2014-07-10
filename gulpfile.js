@@ -66,7 +66,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('deploy', function() {
-  gulp.src('static/index.prod.html')
+  gulp.src('static/index.prod.html.tpl')
   .pipe(through.obj(function(file, encoding, callback) {
     var s = String(file.contents);
     try {
@@ -79,7 +79,25 @@ gulp.task('deploy', function() {
       callback(e);
     }
   }))
+  // Concat to rename
+  .pipe(concat('index.prod.html'))
   .pipe(gulp.dest('static'));
+
+  gulp.src('static/js/build/app/app.min.js')
+  .pipe(through.obj(function(file, encoding, callback) {
+    var s = String(file.contents);
+    try {
+      s = s.replace(/DEPLOY_CACHE/g, Date.now());
+      file.contents = new Buffer(s);
+      this.push(file);
+      callback();
+    }
+    catch(e) {
+      callback(e);
+    }
+  }))
+  // Concat to rename
+  .pipe(gulp.dest('static/js/build/app'));
 });
 
 gulp.task('default', ['scripts', 'scss', 'appscripts']);

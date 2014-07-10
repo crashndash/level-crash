@@ -95,7 +95,8 @@ app.get('/admin', auth, routes.admin);
 app.delete('/admin/level/:name', auth, routes.adminDelete);
 
 app.use(express.static(__dirname + '/../static', {
-  maxAge: 3600000
+  // Cache forever. Query parameter will change, so we don't care.
+  maxAge: 3600000 * 24 * 30
 }));
 
 app.start = function() {
