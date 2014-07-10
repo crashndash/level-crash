@@ -25,7 +25,7 @@ describe('Directives', function() {
 
     beforeEach(inject(function($templateCache) {
       template = $templateCache.get('static/js/components/roads/roads.html');
-      $templateCache.put('/js/components/roads/roads.html', template);
+      $templateCache.put('/js/components/roads/roads.html?DEPLOY_CACHE', template);
     }));
 
     it('Should pass', function() {
@@ -72,7 +72,7 @@ describe('Directives', function() {
   describe('Dashboard directive', function() {
     beforeEach(inject(function($templateCache) {
       template = $templateCache.get('static/js/components/dashboard/dashboard.html');
-      $templateCache.put('/js/components/dashboard/dashboard.html', template);
+      $templateCache.put('/js/components/dashboard/dashboard.html?DEPLOY_CACHE', template);
     }));
 
     it('Should pass', function() {

@@ -40,6 +40,7 @@
   },
   "scripts": {
     "test": "make test",
+    "test-front": "make test-front",
     "start": "node index",
     "deploy": "gulp deploy && git add static/index.prod.html"
   },
@@ -53,7 +54,8 @@
     "url": "https://github.com/eiriksm/level-crash/issues"
   },
   "pre-commit": [
-    "deploy"
+    "deploy",
+    "test-front"
   ],
   "homepage": "https://github.com/eiriksm/level-crash"
 }
