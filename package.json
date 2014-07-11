@@ -1,6 +1,6 @@
 {
   "name": "level-crash",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "level-crash",
   "main": "index.js",
   "dependencies": {
@@ -42,7 +42,7 @@
     "test": "make test",
     "test-front": "make test-front",
     "start": "node index",
-    "deploy": "gulp deploy && git add static/index.prod.html"
+    "deploy": "gulp deploy && git add static/index.prod.html static/js/build"
   },
   "repository": {
     "type": "git",
