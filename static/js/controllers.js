@@ -270,14 +270,23 @@
     // Normally you would see an error here as well, but we don't really care
     // in this case.
 
+    // Double encode, appearently.
+    $scope.makePath = function(path) {
+      return encodeURIComponent(encodeURIComponent(path));
+    };
+
     $scope.tryStepTwo = function() {
       // Validate a couple of things.
       if (!$scope.name || $scope.name.length === 0 || $scope.name.length > 12) {
-        $window.alert('Please choose a level name between 1 and 12 characters.');
+        var lnmsg = 'Please choose a level name between 1 and 12 characters.';
+        $window.alert(lnmsg);
         return;
       }
-      if (!$scope.author|| $scope.author.length === 0 || $scope.author.length > 12) {
-        $window.alert('Please use a name between 1 and 12 characters.');
+      if (!$scope.author ||
+          $scope.author.length === 0 ||
+          $scope.author.length > 12) {
+        var nmsg = 'Please use a name between 1 and 12 characters.';
+        $window.alert(nmsg);
         return;
       }
       var s = $http.post('/api/level', {
@@ -288,7 +297,7 @@
         }
       });
       s.success(function() {
-        $location.path('/level/' + $scope.name);
+        $location.path('/level/' + $scope.makePath($scope.name));
       })
       .error(function() {
         $window.alert('Something went wrong!');

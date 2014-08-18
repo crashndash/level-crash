@@ -8,7 +8,7 @@ var saveLevel = function(req, res) {
   // First see if this name is taken.
   db.get(name, function(e, r) {
     if (e) {
-      res.send(500);
+      res.status(500).end();
       return;
     }
     var level = req.body.level || {};
@@ -18,7 +18,7 @@ var saveLevel = function(req, res) {
     level.tagline = 'By ' + level.author;
     level.timestamp = Date.now();
     if (r && r.ip !== level.ip) {
-      res.send(400, 'Name is taken. Sorry!');
+      res.status(400, 'Name is taken. Sorry!').end();
       return;
     }
     db.set(name, level, function(e) {
@@ -43,14 +43,14 @@ var listLevels = function(req, res) {
   // Find all level names.
   db.list(function(e, r) {
     if (e) {
-      res.send(500);
+      res.status(500).end();
       return;
     }
     // Not sure if this is even possible...
 
     /* istanbul ignore if */
     if (!r) {
-      res.send(404);
+      res.status(404).end();
       return;
     }
     res.json(r);
@@ -61,11 +61,11 @@ var getLevel = function(req, res) {
   // Find the level with this name (no ids here mister).
   db.get(req.params.name, function(e, r) {
     if (e) {
-      res.send(500);
+      res.status(500).end();
       return;
     }
     if (!r) {
-      res.send(404);
+      res.status(404).end();
       return;
     }
     res.json(r);
@@ -83,9 +83,9 @@ var adminDelete = function(req, res) {
   var level = req.params.name;
   db.del(level, function(e, r) {
     if (e) {
-      res.send(500, e);
+      res.status(500, e).end();
     }
-    res.send(204);
+    res.status(204).end();
   });
 };
 
@@ -94,7 +94,7 @@ var myLevels = function(req, res) {
   var userIp = ip(req);
   db.smembers(userIp, function(e, r) {
     if (e) {
-      res.send(500);
+      res.status(500).end();
       return;
     }
     res.json(r);

@@ -15,7 +15,7 @@
   <div class="three-three">
     <h1 ng-show="myLevels.length > 0">My levels</h1>
       <div data-ng-repeat="level in myLevels">
-        <a class="my-level" data-ng-href="/level/{{level}}">{{level}}</a>
+        <a class="my-level" data-ng-href="/level/{{makePath(level)}}">{{level}}</a>
       </div>
     </ul>
   </div>

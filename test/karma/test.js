@@ -71,6 +71,12 @@ describe('mainCtrl', function() {
     mockHttp.flush();
     assert.equal(lastalert, 'Something went wrong!');
   });
+
+  it('Should escape some ugly paths', function() {
+    createController();
+    assert.equal(mockScope.makePath('test/test2.$##'), 'test%252Ftest2.%2524%2523%2523');
+    assert.equal(mockScope.makePath('test123'), 'test123');
+  });
 });
 
 describe('levelCtrl', function() {

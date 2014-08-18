@@ -3,7 +3,7 @@ test:
 	./node_modules/.bin/jshint src/ static/js/*.js static/js/components/ lib/ routes/
 
 test-front:
-		./node_modules/gulp/bin/gulp.js scripts
+		#./node_modules/gulp/bin/gulp.js scripts
 	@NODE_ENV=test ./node_modules/karma/bin/karma start karma.conf.js
 
 test-cov:

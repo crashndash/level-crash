@@ -13,7 +13,10 @@ var ip = require('../lib/ip');
 // app.
 var app = express();
 app.banned = {};
-app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 /* istanbul ignore next */
 app.namespace = process.env.LEVEL_CRASHER_NS || 'levelcrasher';
@@ -51,7 +54,7 @@ app.use(function(req, res, next) {
     app.log(util.format('User is banned, and told so. User ip: %s', userIp));
     app.log('Current ban list:');
     app.log(userIp);
-    res.send(403);
+    res.status(403).end();
     return;
   }
   next();
