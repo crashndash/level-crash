@@ -69,8 +69,12 @@ catch(err) {
   app.config = yaml.safeLoad(fs.readFileSync(__dirname + '/../default.config.yml', 'utf8'));
 }
 var auth = require('../lib/auth');
-
-var indexHtml = function(req, res){
+var textCached;
+var indexHtml = function(req, res) {
+  if (textCached) {
+    res.send(textCached);
+    return;
+  }
   var filename = 'index.html';
   /* istanbul ignore next */
   if (process.env.NODE_ENV === 'production') {
@@ -78,6 +82,7 @@ var indexHtml = function(req, res){
   }
   fs.readFile(__dirname + '/../static/' + filename, 'utf8', function(err, text) {
     res.send(text);
+    textCached = text;
   });
 };
 
