@@ -61,7 +61,7 @@ gulp.task('scss', function() {
 gulp.task('watch', function() {
 
   // Watch .scss files
-  gulp.watch('static/css/scss/**/*.scss', ['scss']);
+  gulp.watch(['static/css/scss/**/*.scss', 'static/js/*.js', 'static/js/components/**/*'], ['default']);
 
 });
 
