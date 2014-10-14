@@ -25,7 +25,7 @@ var saveLevel = function(req, res) {
       // No idea how I would go on and mock this...
       /* istanbul ignore else */
       if (!e) {
-        res.json(req.body.level);
+        res.json(level);
         // Also add to ip list of levels
 
         // @todo, RLY? IP?

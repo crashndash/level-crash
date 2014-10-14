@@ -63,6 +63,17 @@ describe('mainCtrl', function() {
     mockHttp.flush();
     assert.equal(mockLocation.path(), '/level/' + testName);
 
+    // Check that we support levels with spaces in them.
+    createController();
+    testName = 'test level';
+    mockScope.author = 'test name';
+    mockScope.name = testName;
+    mockScope.tryStepTwo();
+    mockHttp.expectGET('/api/mylevels', undefined).respond(200, '');
+    mockHttp.expectPOST('/api/level', undefined).respond(200, '');
+    mockHttp.flush();
+    assert.equal(mockLocation.path(), '/level/' + encodeURIComponent(testName));
+
     // Do some error checking as well.
     createController();
     mockScope.tryStepTwo();

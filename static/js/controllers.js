@@ -297,7 +297,7 @@
         }
       });
       s.success(function() {
-        $location.path('/level/' + $scope.makePath($scope.name));
+        $location.path('/level/' + encodeURIComponent($scope.name));
       })
       .error(function() {
         $window.alert('Something went wrong!');
