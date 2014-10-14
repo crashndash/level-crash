@@ -257,6 +257,10 @@
       }
       return sideResized(side, index, newVal, true);
     };
+    // The first of 2 double encoding. I blame java.
+    $scope.makePath = function(path) {
+      return encodeURIComponent(encodeURIComponent(path));
+    };
   }]);
 
   angular.module('levelCrash.controllers')
