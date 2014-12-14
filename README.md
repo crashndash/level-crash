@@ -13,7 +13,7 @@ Requires the following stack to run:
 - Node js
 - Redis
 
-###Installation
+### Installation
 - Clone this repository: `git clone https://github.com/eiriksm/level-crash`
 - Enter the directory: `cd level-crash`
 - Install dependencies: `npm install`
@@ -27,7 +27,11 @@ Tests are run with karma and mocha. All dependencies should get installed with
 
 To run the backend tests, run `make test`.
 
-To run the front-end tests, run `make test-front`
+To run the frontend tests, run `make test-front`
 
 ### Contribute
 To contribute, check out the repository.
+
+Please make sure all tests are passing (see above). This project has 100% test 
+coverage on both frontend and backend, so when adding features, please also add
+tests.

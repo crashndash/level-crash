@@ -100,6 +100,7 @@ describe('levelCtrl', function() {
   beforeEach(inject(function($controller, $rootScope, $httpBackend, $location) {
     mockHttp = $httpBackend;
     mockHttp.when('GET', '/api/level/' + levelName).respond(200, {});
+    mockHttp.when('POST', '/api/level').respond(200, {});
     mockScope = $rootScope;
     mockLocation = $location;
     var mockWindow = {
@@ -298,5 +299,11 @@ describe('levelCtrl', function() {
     assert.equal(test, false);
     // And it should not have effect.
     assert.equal(mockScope.level.offsets[1][1], 70);
+  });
+
+  it('Should return the expected escaped path', function() {
+    createController();
+    var p = mockScope.makePath('/this/is a %complicated \\path');
+    assert.equal(p, '%252Fthis%252Fis%2520a%2520%2525complicated%2520%255Cpath');
   });
 });

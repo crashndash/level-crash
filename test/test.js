@@ -37,7 +37,13 @@ describe('Index.html', function() {
     .end(function(err, res) {
       should(err).equal(null);
       res.status.should.equal(200);
-      done();
+      // Request it another time, so we can cover the cached case in the
+      // codebase.
+      request(app)
+      .get('/')
+      .end(function() {
+        done();
+      });
     });
   });
 });

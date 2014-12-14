@@ -1,4 +1,5 @@
 ;(function(angular) {
+  'use strict';
   angular.module('levelCrash.controllers')
   .controller('levelCtrl', ['$scope', '$timeout', '$http', '$routeParams', '$location', '$window', function ($scope, $timeout, $http, $routeParams, $location, $window) {
     var roads = [];
@@ -234,7 +235,7 @@
         'swarms',
         'obstacles'
       ];
-      for (i = 0, len = possibleToggles.length; i < len; i++) {
+      for (var i = 0, len = possibleToggles.length; i < len; i++) {
         var p = possibleToggles[i];
         if ($scope.level[p][delta]) {
           delete $scope.level[p][delta];
