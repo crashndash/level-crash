@@ -261,6 +261,26 @@
     $scope.makePath = function(path) {
       return encodeURIComponent(encodeURIComponent(path));
     };
+
+    var autoSave = function() {
+      $http({
+        url: '/api/level',
+        data: {
+          level: $scope.level,
+          name: $scope.level.name
+        },
+        method: 'POST',
+        skipLoader: true
+      });
+    };
+    $scope.$watch('level', function(newVal, oldVal) {
+      if (newVal === oldVal) {
+        // First run.
+        return;
+      }
+      // Save level on each change.
+      autoSave();
+    }, true);
   }]);
 
   angular.module('levelCrash.controllers')
