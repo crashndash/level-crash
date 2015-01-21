@@ -1,4 +1,5 @@
 port: 4000
+google_analytics: ""
 admin:
   user: "admin"
   password: "secret"

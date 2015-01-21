@@ -9,5 +9,6 @@
     <div data-ng-view></div>
     <script src="/js/build/lib/lib.min.js?DEPLOY_CACHE"></script>
     <script src="/js/build/app/app.min.js?DEPLOY_CACHE"></script>
+    GOOGLE_ANALYTICS
   </body>
 </html>

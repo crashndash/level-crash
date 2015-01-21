@@ -1,16 +1,28 @@
+'use strict';
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
 var prefix = require('gulp-autoprefixer');
 var spritesmith = require('gulp.spritesmith');
-var ngmin = require('gulp-ngmin');
+var ngAnnotate = require('gulp-ng-annotate');
 var through = require('through2');
+var yaml = require('js-yaml');
+var fs = require('fs');
 
 var paths = {
   libs: ['static/js/lib/vendor/*.js', 'static/js/lib/*.js'],
   app: ['static/js/app.js', 'static/js/components/**/*.js', 'static/js/controllers.js']
 };
+
+var config;
+
+try {
+  config = yaml.safeLoad(fs.readFileSync(__dirname + '/config.yml', 'utf8'));
+}
+catch(err) {
+  // So, no analytics either, I take it.
+}
 
 gulp.task('scripts', function() {
   // Minify and copy all JavaScript.
@@ -23,7 +35,7 @@ gulp.task('scripts', function() {
 gulp.task('appscripts', function() {
   gulp.src(paths.app)
     .pipe(concat('app.min.js'))
-    .pipe(ngmin())
+    .pipe(ngAnnotate())
     .pipe(uglify())
     .pipe(gulp.dest('static/js/build/app'));
 });
@@ -71,6 +83,19 @@ gulp.task('deploy', function() {
     var s = String(file.contents);
     try {
       s = s.replace(/DEPLOY_CACHE/g, Date.now());
+      if (config && config.googleAnalytics && config.googleAnalytics.length) {
+        s = s.replace(/GOOGLE_ANALYTICS/g, "<script>" +
+          "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){" +
+          "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o)," +
+          "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)" +
+          "})(window,document,'script','//www.google-analytics.com/analytics.js','ga');" +
+          "ga('create', '" + config.googleAnalytics + "');" +
+          "ga('send', 'pageview');" +
+        "</script>");
+      }
+      else {
+        s = s.replace(/GOOGLE_ANALYTICS/g, '');
+      }
       file.contents = new Buffer(s);
       this.push(file);
       callback();
