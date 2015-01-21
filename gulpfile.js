@@ -85,12 +85,12 @@ gulp.task('deploy', function() {
       s = s.replace(/DEPLOY_CACHE/g, Date.now());
       if (config && config.googleAnalytics && config.googleAnalytics.length) {
         s = s.replace(/GOOGLE_ANALYTICS/g, "<script>" +
-          "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){" +
-          "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o)," +
-          "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)" +
-          "})(window,document,'script','//www.google-analytics.com/analytics.js','ga');" +
-          "ga('create', '" + config.googleAnalytics + "');" +
-          "ga('send', 'pageview');" +
+          "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n" +
+          "(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n" +
+          "m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n" +
+          "})(window,document,'script','//www.google-analytics.com/analytics.js','ga');\n" +
+          "ga('create', '" + config.googleAnalytics + "');\n" +
+          "ga('send', 'pageview');\n" +
         "</script>");
       }
       else {
