@@ -5,7 +5,7 @@ Level-crash
 [![Coverage Status](http://img.shields.io/coveralls/eiriksm/level-crash.svg)](https://coveralls.io/r/eiriksm/level-crash?branch=master)
 [![Dependency Status](https://david-dm.org/eiriksm/level-crash.svg?theme=shields.io)](https://david-dm.org/eiriksm/level-crash)
 
-This is the open-source level-editor for [Crash n Dash](http://crashndash.com), and it can be seen in action at (http://levels.crashndash.com).
+This is the open-source level-editor for [Crash n Dash](https://crashndash.com), and it can be seen in action at (https://levels.crashndash.com).
 
 ## Development
 ### Requirements
