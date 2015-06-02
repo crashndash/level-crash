@@ -1,9 +1,9 @@
 Level-crash
 ===========
-[![Code Climate](http://img.shields.io/codeclimate/github/eiriksm/level-crash.svg)](https://codeclimate.com/github/eiriksm/level-crash)
-[![Build Status](https://travis-ci.org/eiriksm/level-crash.svg)](https://travis-ci.org/eiriksm/level-crash)
-[![Coverage Status](http://img.shields.io/coveralls/eiriksm/level-crash.svg)](https://coveralls.io/r/eiriksm/level-crash?branch=master)
-[![Dependency Status](https://david-dm.org/eiriksm/level-crash.svg?theme=shields.io)](https://david-dm.org/eiriksm/level-crash)
+[![Code Climate](http://img.shields.io/codeclimate/github/crashndash/level-crash.svg)](https://codeclimate.com/github/crashndash/level-crash)
+[![Build Status](https://travis-ci.org/crashndash/level-crash.svg)](https://travis-ci.org/crashndash/level-crash)
+[![Coverage Status](http://img.shields.io/coveralls/crashndash/level-crash.svg)](https://coveralls.io/r/crashndash/level-crash?branch=master)
+[![Dependency Status](https://david-dm.org/crashndash/level-crash.svg?theme=shields.io)](https://david-dm.org/crashndash/level-crash)
 
 This is the open-source level-editor for [Crash n Dash](https://crashndash.com), and it can be seen in action at (https://levels.crashndash.com).
 
@@ -14,7 +14,7 @@ Requires the following stack to run:
 - Redis
 
 ### Installation
-- Clone this repository: `git clone https://github.com/eiriksm/level-crash`
+- Clone this repository: `git clone https://github.com/crashndash/level-crash`
 - Enter the directory: `cd level-crash`
 - Install dependencies: `npm install`
 - Start the server: `node index.js`
