@@ -12,10 +12,12 @@ app.start();
 describe('App generally', function() {
   it('Should return 403 if user is banned', function(done) {
     app.banned['127.0.0.1'] = true;
+    // ...and set ipv6 version as well.
+    app.banned['::ffff:127.0.0.1'] = true;
     request(app)
     .get('/')
+    .expect(403)
     .end(function(err, res) {
-      res.status.should.equal(403);
       app.banned = {};
       done(err);
     });
@@ -64,8 +66,8 @@ describe('/api paths', function() {
   it('Should return 404 on non-existent level', function(done) {
     request(app)
     .get('/api/level/' + levelName)
+    .expect(404)
     .end(function(err, res) {
-      res.status.should.equal(404);
       done(err);
     });
   });
@@ -124,8 +126,8 @@ describe('/api paths', function() {
         level: {
         }
       })
+      .expect(400)
       .end(function(err, res) {
-        res.status.should.equal(400);
         done(err);
       });
 
@@ -161,7 +163,7 @@ describe('/api paths', function() {
   it('Should have problems responding when errors are occuring', function(done) {
     this.timeout(10000);
     // Provoke a couple of errors. For coverage of course.
-    app.config.redis.port = 1234564;
+    app.config.redis.port = 12345;
     app.config.port = 54321;
     app.start();
     request(app)
