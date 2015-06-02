@@ -1,0 +1,6 @@
+languages:
+  JavaScript: true
+exclude_paths:
+- "static/js/lib/**/*"
+- "static/js/lib/*.js"
+- "static/js/build/**/*.js"
