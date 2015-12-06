@@ -7,6 +7,10 @@ var should = require('should');
 app.config.port = 12345;
 app.config.admin.user = 'admin';
 app.config.admin.password = 'secret';
+app.config.redis = {
+  connect_timeout: 100,
+  max_attempts: 1
+}
 app.start();
 
 describe('App generally', function() {
