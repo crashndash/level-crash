@@ -245,10 +245,8 @@ describe('DB module', function() {
 
   it('Should get and set in an OK manner', function(done) {
     // Should probably init again, then?
-    d.init(app.config.redis);
+    d.init(app.config)
     var testvalue = 'testvalue' + Math.floor(Math.random() * 1000);
-    // For coverage reasons :)
-    d.set();
     d.set('testkey', testvalue, function() {
       d.get('testkey', function(e, v) {
         v.should.equal(testvalue);
