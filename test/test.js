@@ -11,6 +11,7 @@ app.config.redis = {
   connect_timeout: 100,
   max_attempts: 1
 }
+app.config.dataDir = 'testData/test' + Math.random();
 app.start();
 
 describe('App generally', function() {
@@ -242,20 +243,6 @@ describe('DB module', function() {
     d.should.have.property('list');
   });
 
-  it('Should not go so well if we init with bad settings', function(done) {
-    this.timeout(20000);
-    // This first one is just for coverage.
-    d.init({port: 2134, host: 'localhost'});
-    var doneDone = false;
-    d.init({port: 2134, host: 'localhost'}, function(err) {
-      should(err).not.equal(null);
-      if (!doneDone) {
-        done();
-        doneDone = true;
-      }
-    });
-  });
-
   it('Should get and set in an OK manner', function(done) {
     // Should probably init again, then?
     d.init(app.config.redis);
@@ -270,19 +257,6 @@ describe('DB module', function() {
     });
   });
 
-  it('Should error out if we actually saved non-valid JSON', function(done) {
-    var c = require('redis').createClient(app.config.redis);
-    var testkey = 'testkey' + Math.floor(Math.random() * 1000);
-    c.on('ready', function() {
-      c.hset(app.namespace + '.levels', testkey, 'not-valid-json-i-suppose1', function() {
-        d.get(testkey, function(e) {
-          should(e).not.equal(null);
-          done();
-        });
-      });
-    });
-  });
-
   it('Should delete a key as expected', function(done) {
     var testkey = 'testkey' + Math.floor(Math.random() * 1000);
     d.set(testkey, 'value', function(e, v) {
@@ -290,7 +264,7 @@ describe('DB module', function() {
         w.should.equal('value');
         d.del(testkey, function() {
           d.get(testkey, function(g, x) {
-            should(x).equal(null);
+            should(x).equal(undefined);
             done(g);
           });
         });
@@ -304,19 +278,6 @@ describe('DB module', function() {
       done(f);
     });
   });
-
-  it('Should do as expected when looking for something with smembers', function(done) {
-    var testkey = 'saddkey' + Math.floor(Math.random() * 1000);
-    this.timeout(5000);
-    d.sadd(testkey, 'value', function(a, b) {
-      d.smembers(testkey, function(e, r) {
-        r.length.should.equal(1);
-        r[0].should.equal('value');
-        done(e);
-      });
-    });
-  });
-
 });
 
 describe('Auth module', function() {
