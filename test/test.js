@@ -95,7 +95,7 @@ describe('/api paths', function() {
   it('Should add level when sending POST to /api/level even if it is empty', function(done) {
     request(app)
     .post('/api/level')
-    .end(function(err, res) {
+    .end(function (err, res) {
       res.status.should.equal(200);
       done(err);
     });
