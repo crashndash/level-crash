@@ -1,6 +1,8 @@
 language: node_js
 node_js:
-  - '4'
+  - 6
+  - 8
+  - node
 sudo: false
 env:
   - CXX=g++-4.8
@@ -15,5 +17,3 @@ script:
   - make test-front
 after_script:
   - cat coverage/karma/*/lcov.info coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js > /dev/null 2>&1
-services:
-  - redis-server
