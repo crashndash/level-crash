@@ -3,13 +3,17 @@ var fs = require('fs');
 var db = require('../lib/db');
 var ip = require('../lib/ip');
 
-var saveLevel = function(req, res) {
-  var name = req.body.name;
+var saveLevel = function (req, res) {
+  var name = req.body.name
+  if (!name) {
+    // Just find a name i guess.
+    name = Math.random()
+  }
   // First see if this name is taken.
-  db.get(name, function(e, r) {
+  db.get(name, function (e, r) {
     if (e) {
-      res.status(500).end();
-      return;
+      res.send(500).end()
+      return
     }
     var level = req.body.level || {};
     // Add IP address of user to the object.
@@ -19,9 +23,9 @@ var saveLevel = function(req, res) {
     level.timestamp = Date.now();
     if (r && r.ip !== level.ip) {
       res.status(400, 'Name is taken. Sorry!').end();
-      return;
+      return
     }
-    db.set(name, level, function(e) {
+    db.set(name, level, function (e) {
       // No idea how I would go on and mock this...
       /* istanbul ignore else */
       if (!e) {
@@ -29,15 +33,15 @@ var saveLevel = function(req, res) {
         // Also add to ip list of levels
 
         // @todo, RLY? IP?
-        db.sadd(level.ip, name);
-        return;
+        db.sadd(level.ip, name)
+        return
       }
       else {
-        res.send(500);
+        res.sendStatus(500)
       }
-    });
-  });
-};
+    })
+  })
+}
 
 var listLevels = function(req, res) {
   // Find all level names.

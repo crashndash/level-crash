@@ -109,7 +109,7 @@ app.use(express.static(__dirname + '/../static', {
 
 app.start = function() {
   // Boot up redis db client.
-  db.init(app.config.redis);
+  db.init(app.config);
 
   // Listen on selected port
   app.listen(app.config.port);

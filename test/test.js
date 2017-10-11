@@ -1,16 +1,17 @@
+/* global it, describe */
 process.env.LEVEL_CRASHER_NS = 'levelcrash_test' + Math.random();
-var app = require('../src/app');
-var request = require('supertest');
-var assert = require('assert');
-var should = require('should');
+let app = require('../src/app')
+const request = require('supertest')
+const should = require('should')
+const fs = require('fs')
+const base64 = require('base-64')
+const rimraf = require('rimraf')
+const mkdirp = require('mkdirp')
 
 app.config.port = 12345;
 app.config.admin.user = 'admin';
 app.config.admin.password = 'secret';
-app.config.redis = {
-  connect_timeout: 100,
-  max_attempts: 1
-}
+app.config.dataDir = 'testData/test' + Math.random();
 app.start();
 
 describe('App generally', function() {
@@ -88,17 +89,35 @@ describe('/api paths', function() {
     .end(function(err, res) {
       res.status.should.equal(200);
       done(err);
-    });
-  });
+    })
+  })
+
+  it('Should have an error if we post to a level that is wrongly saved', (done) => {
+    let testkey = 'test' + Math.random()
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    request(app)
+    .post('/api/level')
+    .send({
+      name: testkey,
+      level: {
+        author: levelAuthor
+      }
+    })
+    .end((err, res) => {
+      should(err).not.equal(undefined)
+      res.status.should.equal(500)
+      rimraf(app.config.dataDir + '/' + base64.encode(testkey), done)
+    })
+  })
 
   it('Should add level when sending POST to /api/level even if it is empty', function(done) {
     request(app)
     .post('/api/level')
-    .end(function(err, res) {
-      res.status.should.equal(200);
-      done(err);
-    });
-  });
+    .end(function (err, res) {
+      res.status.should.equal(200)
+      done(err)
+    })
+  })
 
   it('Should return 200 on existent level', function(done) {
     request(app)
@@ -198,8 +217,40 @@ describe('/api paths', function() {
         });
       });
     });
-  });
-});
+  })
+
+  it('Should not be able to list levels if we delete the datadir', (done) => {
+    rimraf.sync(app.config.dataDir)
+    request(app)
+    .get('/api/level')
+    .end((err, res) => {
+      res.status.should.equal(500)
+      mkdirp(app.config.dataDir, done)
+    })
+  })
+
+  it('Should not be able to return a level if it has bad json', (done) => {
+    let testkey = 'testkey789'
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    request(app)
+    .get('/api/level/' + testkey)
+    .end((err, res) => {
+      res.status.should.equal(500)
+      rimraf(app.config.dataDir + '/' + base64.encode(testkey), done)
+    })
+  })
+
+  it('Should not be possible to list own levels when there is bad levels in there', (done) => {
+    let testkey = 'testkey888'
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    request(app)
+    .get('/api/mylevels')
+    .end((err, res) => {
+      res.status.should.equal(500)
+      rimraf(app.config.dataDir + '/' + base64.encode(testkey), done)
+    })
+  })
+})
 
 describe('IP module', function() {
   app.config.port = 1234;
@@ -242,26 +293,10 @@ describe('DB module', function() {
     d.should.have.property('list');
   });
 
-  it('Should not go so well if we init with bad settings', function(done) {
-    this.timeout(20000);
-    // This first one is just for coverage.
-    d.init({port: 2134, host: 'localhost'});
-    var doneDone = false;
-    d.init({port: 2134, host: 'localhost'}, function(err) {
-      should(err).not.equal(null);
-      if (!doneDone) {
-        done();
-        doneDone = true;
-      }
-    });
-  });
-
   it('Should get and set in an OK manner', function(done) {
     // Should probably init again, then?
-    d.init(app.config.redis);
+    d.init(app.config)
     var testvalue = 'testvalue' + Math.floor(Math.random() * 1000);
-    // For coverage reasons :)
-    d.set();
     d.set('testkey', testvalue, function() {
       d.get('testkey', function(e, v) {
         v.should.equal(testvalue);
@@ -270,18 +305,49 @@ describe('DB module', function() {
     });
   });
 
-  it('Should error out if we actually saved non-valid JSON', function(done) {
-    var c = require('redis').createClient(app.config.redis);
-    var testkey = 'testkey' + Math.floor(Math.random() * 1000);
-    c.on('ready', function() {
-      c.hset(app.namespace + '.levels', testkey, 'not-valid-json-i-suppose1', function() {
-        d.get(testkey, function(e) {
-          should(e).not.equal(null);
-          done();
-        });
-      });
-    });
-  });
+  it('Should not set if we set an empty value', (done) => {
+    var testkey = 'testkey123'
+    d.set(testkey, '', () => {
+      d.get(testkey, (err, res) => {
+        should(res).equal(undefined)
+        done(err, res)
+      })
+    })
+  })
+
+  it('Should fail if we delete the datadir and try to list files', (done) => {
+    rimraf.sync(app.config.dataDir)
+    d.smembers('1', (err, res) => {
+      should(err).not.equal(undefined)
+      d.init(app.config, done)
+    })
+  })
+
+  it('Should fail if we delete the datadir and try to list files', (done) => {
+    rimraf.sync(app.config.dataDir)
+    d.list((err, res) => {
+      should(err).not.equal(undefined)
+      d.init(app.config, done)
+    })
+  })
+
+  it('Should fail json parsing if we save a bad file', (done) => {
+    let testkey = 'testkey789'
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    d.get(testkey, (err, res) => {
+      should(err).not.equal(undefined)
+      done()
+    })
+  })
+
+  it('Should return an error when we are listing and filtering files with problems', (done) => {
+    let testkey = 'testkey789'
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    d.smembers('wa', (err, r) => {
+      should(err).not.equal(undefined)
+      done()
+    })
+  })
 
   it('Should delete a key as expected', function(done) {
     var testkey = 'testkey' + Math.floor(Math.random() * 1000);
@@ -290,7 +356,7 @@ describe('DB module', function() {
         w.should.equal('value');
         d.del(testkey, function() {
           d.get(testkey, function(g, x) {
-            should(x).equal(null);
+            should(x).equal(undefined);
             done(g);
           });
         });
@@ -304,19 +370,6 @@ describe('DB module', function() {
       done(f);
     });
   });
-
-  it('Should do as expected when looking for something with smembers', function(done) {
-    var testkey = 'saddkey' + Math.floor(Math.random() * 1000);
-    this.timeout(5000);
-    d.sadd(testkey, 'value', function(a, b) {
-      d.smembers(testkey, function(e, r) {
-        r.length.should.equal(1);
-        r[0].should.equal('value');
-        done(e);
-      });
-    });
-  });
-
 });
 
 describe('Auth module', function() {
