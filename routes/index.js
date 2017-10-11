@@ -33,15 +33,15 @@ var saveLevel = function (req, res) {
         // Also add to ip list of levels
 
         // @todo, RLY? IP?
-        db.sadd(level.ip, name);
-        return;
+        db.sadd(level.ip, name)
+        return
       }
       else {
-        res.sendStatus(500);
+        res.sendStatus(500)
       }
-    });
-  });
-};
+    })
+  })
+}
 
 var listLevels = function(req, res) {
   // Find all level names.

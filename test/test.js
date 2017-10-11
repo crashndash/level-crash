@@ -1,11 +1,12 @@
+/* global it, describe */
 process.env.LEVEL_CRASHER_NS = 'levelcrash_test' + Math.random();
-var app = require('../src/app');
-var request = require('supertest');
-var assert = require('assert');
-var should = require('should');
+let app = require('../src/app')
+const request = require('supertest')
+const should = require('should')
 const fs = require('fs')
 const base64 = require('base-64')
 const rimraf = require('rimraf')
+const mkdirp = require('mkdirp')
 
 app.config.port = 12345;
 app.config.admin.user = 'admin';
@@ -88,17 +89,35 @@ describe('/api paths', function() {
     .end(function(err, res) {
       res.status.should.equal(200);
       done(err);
-    });
-  });
+    })
+  })
+
+  it('Should have an error if we post to a level that is wrongly saved', (done) => {
+    let testkey = 'test' + Math.random()
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    request(app)
+    .post('/api/level')
+    .send({
+      name: testkey,
+      level: {
+        author: levelAuthor
+      }
+    })
+    .end((err, res) => {
+      should(err).not.equal(undefined)
+      res.status.should.equal(500)
+      rimraf(app.config.dataDir + '/' + base64.encode(testkey), done)
+    })
+  })
 
   it('Should add level when sending POST to /api/level even if it is empty', function(done) {
     request(app)
     .post('/api/level')
     .end(function (err, res) {
-      res.status.should.equal(200);
-      done(err);
-    });
-  });
+      res.status.should.equal(200)
+      done(err)
+    })
+  })
 
   it('Should return 200 on existent level', function(done) {
     request(app)
@@ -198,8 +217,40 @@ describe('/api paths', function() {
         });
       });
     });
-  });
-});
+  })
+
+  it('Should not be able to list levels if we delete the datadir', (done) => {
+    rimraf.sync(app.config.dataDir)
+    request(app)
+    .get('/api/level')
+    .end((err, res) => {
+      res.status.should.equal(500)
+      mkdirp(app.config.dataDir, done)
+    })
+  })
+
+  it('Should not be able to return a level if it has bad json', (done) => {
+    let testkey = 'testkey789'
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    request(app)
+    .get('/api/level/' + testkey)
+    .end((err, res) => {
+      res.status.should.equal(500)
+      rimraf(app.config.dataDir + '/' + base64.encode(testkey), done)
+    })
+  })
+
+  it('Should not be possible to list own levels when there is bad levels in there', (done) => {
+    let testkey = 'testkey888'
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    request(app)
+    .get('/api/mylevels')
+    .end((err, res) => {
+      res.status.should.equal(500)
+      rimraf(app.config.dataDir + '/' + base64.encode(testkey), done)
+    })
+  })
+})
 
 describe('IP module', function() {
   app.config.port = 1234;
@@ -272,10 +323,27 @@ describe('DB module', function() {
     })
   })
 
+  it('Should fail if we delete the datadir and try to list files', (done) => {
+    rimraf.sync(app.config.dataDir)
+    d.list((err, res) => {
+      should(err).not.equal(undefined)
+      d.init(app.config, done)
+    })
+  })
+
   it('Should fail json parsing if we save a bad file', (done) => {
     let testkey = 'testkey789'
     fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
     d.get(testkey, (err, res) => {
+      should(err).not.equal(undefined)
+      done()
+    })
+  })
+
+  it('Should return an error when we are listing and filtering files with problems', (done) => {
+    let testkey = 'testkey789'
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    d.smembers('wa', (err, r) => {
       should(err).not.equal(undefined)
       done()
     })
