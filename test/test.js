@@ -3,14 +3,13 @@ var app = require('../src/app');
 var request = require('supertest');
 var assert = require('assert');
 var should = require('should');
+const fs = require('fs')
+const base64 = require('base-64')
+const rimraf = require('rimraf')
 
 app.config.port = 12345;
 app.config.admin.user = 'admin';
 app.config.admin.password = 'secret';
-app.config.redis = {
-  connect_timeout: 100,
-  max_attempts: 1
-}
 app.config.dataDir = 'testData/test' + Math.random();
 app.start();
 
@@ -254,6 +253,33 @@ describe('DB module', function() {
       });
     });
   });
+
+  it('Should not set if we set an empty value', (done) => {
+    var testkey = 'testkey123'
+    d.set(testkey, '', () => {
+      d.get(testkey, (err, res) => {
+        should(res).equal(undefined)
+        done(err, res)
+      })
+    })
+  })
+
+  it('Should fail if we delete the datadir and try to list files', (done) => {
+    rimraf.sync(app.config.dataDir)
+    d.smembers('1', (err, res) => {
+      should(err).not.equal(undefined)
+      d.init(app.config, done)
+    })
+  })
+
+  it('Should fail json parsing if we save a bad file', (done) => {
+    let testkey = 'testkey789'
+    fs.writeFileSync(app.config.dataDir + '/' + base64.encode(testkey), 'badjson{}')
+    d.get(testkey, (err, res) => {
+      should(err).not.equal(undefined)
+      done()
+    })
+  })
 
   it('Should delete a key as expected', function(done) {
     var testkey = 'testkey' + Math.floor(Math.random() * 1000);
