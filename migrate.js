@@ -1,3 +1,4 @@
+'use strict'
 const fs = require('fs')
 const mkdirp = require('mkdirp');
 const yaml = require('js-yaml')
