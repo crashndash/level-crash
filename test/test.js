@@ -4,7 +4,7 @@ let app = require('../src/app')
 const request = require('supertest')
 const should = require('should')
 const fs = require('fs')
-const base64 = require('base-64')
+const base64 = require('../lib/base-64')
 const rimraf = require('rimraf')
 const mkdirp = require('mkdirp')
 
