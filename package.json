@@ -10,6 +10,7 @@
     "express": "^4.13.3",
     "http-auth": "^3.1.0",
     "js-yaml": "^3.5.4",
+    "kill-switch": "^2.0.0",
     "mkdirp": "^0.5.1"
   },
   "devDependencies": {
@@ -46,7 +47,8 @@
     "lint": "standard src/ static/js/*.js static/js/components/ lib/ routes/",
     "test-front": "make test-front",
     "start": "node index",
-    "deploy": "gulp deploy && git add static/index.prod.html static/js/build"
+    "deploy": "gulp deploy && git add static/index.prod.html static/js/build",
+    "deploy-app": "git pull && npm i && kill-switch"
   },
   "repository": {
     "type": "git",
