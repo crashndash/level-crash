@@ -1,5 +1,7 @@
 Level-crash
 ===========
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/crashndash/level-crash.svg)](https://greenkeeper.io/)
 [![Code Climate](http://img.shields.io/codeclimate/github/crashndash/level-crash.svg)](https://codeclimate.com/github/crashndash/level-crash)
 [![Build Status](https://travis-ci.org/crashndash/level-crash.svg)](https://travis-ci.org/crashndash/level-crash)
 [![Coverage Status](http://img.shields.io/coveralls/crashndash/level-crash.svg)](https://coveralls.io/r/crashndash/level-crash?branch=master)
