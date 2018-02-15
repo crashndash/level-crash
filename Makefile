@@ -7,7 +7,7 @@ test-front:
 	@NODE_ENV=test ./node_modules/karma/bin/karma start karma.conf.js
 
 test-cov:
-	@NODE_ENV=test node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -d -R spec
+	@NODE_ENV=test node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -d -R spec --exit
 
 
 .PHONY: test test-cov test-front
