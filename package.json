@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "chai": "^4.0.0",
-    "coveralls": "^2.11.4",
+    "coveralls": "^3.0.1",
     "eslint": "^4.8.0",
     "gulp": "~3.9.0",
     "gulp-autoprefixer": "5.0.0",
