@@ -9,7 +9,7 @@
     "colors": "^1.1.2",
     "express": "^4.13.3",
     "http-auth": "^3.1.0",
-    "js-yaml": "^3.13.0",
+    "js-yaml": "^3.13.1",
     "kill-switch": "^2.0.0",
     "mkdirp": "^0.5.1"
   },
