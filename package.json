@@ -27,7 +27,7 @@
     "gulp-util": "~3.0.7",
     "gulp.spritesmith": "^6.0.0",
     "istanbul": "^0.4.1",
-    "jshint": "~2.9.3",
+    "jshint": "~2.10.3",
     "karma": "^3.0.0",
     "karma-coverage": "^1.0.0",
     "karma-mocha": "^1.1.0",
